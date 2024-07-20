@@ -1,0 +1,4 @@
+baseURL: https://rljclub.github.io/
+languageCode: en-us
+title: "Reinforcement Learning Journal Club"
+theme: ["PaperMod"]
