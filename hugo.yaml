@@ -22,7 +22,7 @@ menu:
       url: tags/
       weight: 30
     - name: 👤 Us
-      url: Us
+      url: us/
       weight: 40
 
 
