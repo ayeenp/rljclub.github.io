@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Reinforcement Learning Journal Club</title>
+    <title>🧠 RL Journal Club</title>
     <link>https://rljclub.github.io/</link>
-    <description>Recent content on Reinforcement Learning Journal Club</description>
+    <description>Recent content on 🧠 RL Journal Club</description>
     <generator>Hugo -- 0.129.0</generator>
     <language>en-us</language>
+    <lastBuildDate>Sat, 20 Jul 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://rljclub.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ExpGen: Explore to Generalize in Zero-Shot RL</title>
+      <link>https://rljclub.github.io/posts/explore-to-generalize-in-zero-shot-rl/</link>
+      <pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://rljclub.github.io/posts/explore-to-generalize-in-zero-shot-rl/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://rljclub.github.io/us/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://rljclub.github.io/us/</guid>
+      <description>Welcome to our blog! We are a team of enthusiastic professors and students from Sharif University of Technology who are eager to share our insights and passion for this fascinating field. Our aim is to share our knowledge and excitement about this cutting-edge field with you ❤️.
+Professors Professor Mohammad Hossein Rohban Professor Ehsaneddin Asgari Students Arash Alikhani Alireza Nobakht Labs RIML Lab NLP &amp;amp; DH Lab We hope you enjoy our blog and find our content both informative and inspiring 🚀!</description>
+    </item>
   </channel>
 </rss>
