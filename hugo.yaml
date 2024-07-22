@@ -29,7 +29,7 @@ menu:
 params:
   homeInfoParams:
     Title: 👋 Welcome to RL Journal Club!
-    Content: Where we dive into the cutting-edge world of [Reinforcement Learning](https://en.wikipedia.org/wiki/Reinforcement_learning) research! We are a team of enthusiastic professors and students from [Sharif University of Technology](https://en.sharif.edu) who are eager to share our insights and passion for this fascinating field. Join us as we explore the latest advancements and exciting developments in Reinforcement Learning. We hope you find our content both informative and inspiring!
+    Content: Where we dive into the cutting-edge world of [Reinforcement Learning](https://en.wikipedia.org/wiki/Reinforcement_learning) research! We are a team of enthusiastic professors and students from [Sharif University of Technology](https://en.sharif.edu) who are eager to share our insights and passion for this fascinating field. Join us as we explore the latest advancements and exciting developments in Reinforcement Learning. We hope you find our content both informative and inspiring 🚀!
   assets:
     favicon: "/favicon.ico"
     favicon16x16: "/favicon-16x16.png"
@@ -42,4 +42,10 @@ params:
     - name: github
       title: Github
       url: "https://github.com/RLJClub"
+  math: true
+  hideSummary: true
     
+
+services:
+  disqus:
+    shortname: rljclub-github-io

@@ -6,40 +6,68 @@
     <description>Recent content in Tags on 🧠 RL Journal Club</description>
     <generator>Hugo -- 0.129.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 20 Jul 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 22 Jul 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://rljclub.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Ensemble</title>
       <link>https://rljclub.github.io/tags/ensemble/</link>
-      <pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
       <guid>https://rljclub.github.io/tags/ensemble/</guid>
       <description></description>
     </item>
     <item>
       <title>Entropy</title>
       <link>https://rljclub.github.io/tags/entropy/</link>
-      <pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
       <guid>https://rljclub.github.io/tags/entropy/</guid>
       <description></description>
     </item>
     <item>
       <title>Exploration</title>
       <link>https://rljclub.github.io/tags/exploration/</link>
-      <pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
       <guid>https://rljclub.github.io/tags/exploration/</guid>
       <description></description>
     </item>
     <item>
       <title>Generalization</title>
       <link>https://rljclub.github.io/tags/generalization/</link>
-      <pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
       <guid>https://rljclub.github.io/tags/generalization/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>IDAAC</title>
+      <link>https://rljclub.github.io/tags/idaac/</link>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://rljclub.github.io/tags/idaac/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>IMPALA</title>
+      <link>https://rljclub.github.io/tags/impala/</link>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://rljclub.github.io/tags/impala/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>PPO</title>
+      <link>https://rljclub.github.io/tags/ppo/</link>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://rljclub.github.io/tags/ppo/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Procgen</title>
+      <link>https://rljclub.github.io/tags/procgen/</link>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
+      <guid>https://rljclub.github.io/tags/procgen/</guid>
       <description></description>
     </item>
     <item>
       <title>Zero-Shot</title>
       <link>https://rljclub.github.io/tags/zero-shot/</link>
-      <pubDate>Sat, 20 Jul 2024 00:00:00 +0000</pubDate>
+      <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
       <guid>https://rljclub.github.io/tags/zero-shot/</guid>
       <description></description>
     </item>
