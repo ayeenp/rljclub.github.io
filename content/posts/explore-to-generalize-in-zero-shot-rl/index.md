@@ -296,6 +296,13 @@ Following figure shows in each row, the probability of algorithm X outperforming
 
 ![Result Comparison](comp2.png#center)
 
+## See Also
+
+- [PyTorch implementation of ExpGen @ GitHub](https://github.com/EvZissel/expgen)
+- [Ev Zisselman Presentation @ NeurIPS 2023](https://slideslive.com/39015036)
+- [ExpGen Rebuttal Process @ OpenReview](https://openreview.net/forum?id=37cADkATD0)
+- [ExpGen Poster for NeurIPS 2023](https://neurips.cc/media/PosterPDFs/NeurIPS%202023/79886.png)
+
 ## References
 
 [1] [Zisselman, Ev, et al. "Explore to generalize in zero-shot rl." Advances in Neural Information Processing Systems 36 (2024).](https://arxiv.org/abs/2306.03072)
@@ -307,3 +314,5 @@ Following figure shows in each row, the probability of algorithm X outperforming
 [4] [Raileanu, Roberta, and Rob Fergus. "Decoupling value and policy for generalization in reinforcement learning." International Conference on Machine Learning. PMLR, 2021.](https://arxiv.org/abs/2102.10330)
 
 [5] [Ghosh, Dibya, et al. "Why generalization in rl is difficult: Epistemic pomdps and implicit partial observability." Advances in neural information processing systems 34 (2021): 25502-25515.](https://proceedings.neurips.cc/paper/2021/hash/d5ff135377d39f1de7372c95c74dd962-Abstract.html)
+
+[6] [Espeholt, Lasse, et al. "Impala: Scalable distributed deep-rl with importance weighted actor-learner architectures." International conference on machine learning. PMLR, 2018.](https://arxiv.org/abs/1802.01561)
