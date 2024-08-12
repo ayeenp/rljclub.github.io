@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Ensemble on 🧠 RL Journal Club</title>
-    <link>https://rljclub.github.io/tags/ensemble/</link>
+    <link>http://localhost:1313/tags/ensemble/</link>
     <description>Recent content in Ensemble on 🧠 RL Journal Club</description>
     <generator>Hugo -- 0.129.0</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 22 Jul 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://rljclub.github.io/tags/ensemble/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/ensemble/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ExpGen: Explore to Generalize in Zero-Shot RL</title>
-      <link>https://rljclub.github.io/posts/explore-to-generalize-in-zero-shot-rl/</link>
+      <link>http://localhost:1313/posts/explore-to-generalize-in-zero-shot-rl/</link>
       <pubDate>Mon, 22 Jul 2024 00:00:00 +0000</pubDate>
-      <guid>https://rljclub.github.io/posts/explore-to-generalize-in-zero-shot-rl/</guid>
-      <description>Introduction This paper studies the problem of zero-shot generalization in reinforcement learning and introduces an algorithm that trains an ensamble of maximum reward seeking agents and an maximum entropy agent. At test time, either the ensemble agrees on an action, and we generalize well, or we take exploratory actions with the help of maximum entropy agent and drive us to a novel part of the state space, where the ensemble may potentially agree again.</description>
+      <guid>http://localhost:1313/posts/explore-to-generalize-in-zero-shot-rl/</guid>
+      <description>by Ev Zisselman, Itai Lavie, Daniel Soudry, and Aviv Tamar</description>
     </item>
   </channel>
 </rss>

@@ -2,9 +2,9 @@
 author: "Arash Alikhani"
 title: "ExpGen: Explore to Generalize in Zero-Shot RL"
 date: "2024-07-22"
-# description: ""
+description: "by Ev Zisselman, Itai Lavie, Daniel Soudry, and Aviv Tamar"
 # summary: ""
-tags: ["exploration", "generalization", "zero-shot", "ensemble", "entropy", "IMPALA", "PPO", "IDAAC", "procgen"]
+tags: ["exploration", "generalization", "zero-shot", "ensemble", "entropy", "IMPALA", "PPO", "IDAAC", "procgen", "NeurIPS", "2023", "NeurIPS23"]
 # categories: []
 # series: []
 # aliases: []
