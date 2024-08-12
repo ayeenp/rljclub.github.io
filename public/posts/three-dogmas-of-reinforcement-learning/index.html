@@ -185,50 +185,50 @@
 </div>
 
   <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
-<p>This paper investigates the assumeption that we hold true for modeling reinforcement learning problems and argues how they might be wrong and actually hold us back in our path through modeling of intelligence in the reinforcement learning paradigm. The paper called these assumptions dogmas.</p>
+<p>This paper critically examines the assumptions commonly accepted in modeling reinforcement learning problems, suggesting that these assumptions may impede progress in the field. The authors refer to these assumptions as &ldquo;dogmas.&rdquo;</p>
 <blockquote>
-<p><strong>Dogma: A fixed, especially religious, belief or set of beliefs that people are expected to accept without any doubts.</strong> <em>&ndash;From the <a href="https://dictionary.cambridge.org/dictionary/english">Cambridge Advanced Learner&rsquo;s Dictionary &amp; Thesaurus</a></em></p>
+<p><strong>Dogma: A fixed, especially religious, belief or set of beliefs that people are expected to accept without any doubts.</strong> <em>—From the <a href="https://dictionary.cambridge.org/dictionary/english">Cambridge Advanced Learner&rsquo;s Dictionary &amp; Thesaurus</a></em></p>
 </blockquote>
-<p>The paper introduces three dogmas:</p>
-<ul>
+<p>The paper introduces three central dogmas:</p>
+<ol>
 <li>The Environment Spotlight</li>
 <li>Learning as Finding a Solution</li>
-<li>The Reward Hypothesis (is not actually a dogma!)</li>
-</ul>
-<p>The author argues the true reinforcement learning landscape is actualy like this</p>
+<li>The Reward Hypothesis (although not exactly a dogma)</li>
+</ol>
+<p>The author argues the true reinforcement learning landscape is actualy like this,</p>
 <p><img loading="lazy" src="rl1.png#center" alt="rl landscape"  />
 </p>
 <p>In the words of Rich Sutton:</p>
 <blockquote>
 <p><strong>RL can be viewed as a microcosm of the whole AI problem.</strong></p>
 </blockquote>
-<p>But the RL today is like the following ☹️</p>
+<p>However, today&rsquo;s RL landscape is overly simplified,</p>
 <p><img loading="lazy" src="rl2.png#center" alt="rl landscape"  />
 </p>
-<p>And these three dogmas are what shrink the landscape of RL.</p>
+<p>These three dogmas are responsible for narrowing the potential of RL,</p>
 <p><img loading="lazy" src="rl3.png#center" alt="rl landscape"  />
 </p>
-<p>And argues we should consider getting rid of them.</p>
+<p>The authors propose that we consider moving beyond these dogmas,</p>
 <p><img loading="lazy" src="rl4.png#center" alt="rl landscape"  />
 </p>
-<p>To restore back the true RL landscape.</p>
+<p>To reclaim the true landscape of RL,</p>
 <p><img loading="lazy" src="rl5.png#center" alt="rl landscape"  />
 </p>
 <h2 id="background">Background<a hidden class="anchor" aria-hidden="true" href="#background">#</a></h2>
-<p>The author refer to the Thomas Kuhn book</p>
+<p>The authors reference Thomas Kuhn&rsquo;s book, &ldquo;The Structure of Scientific Revolutions&rdquo;,</p>
 <p><img loading="lazy" src="book1.jpg#center" alt="The Structure of Scientific Revolution"  />
 </p>
-<p>In which he distinguishes between two phases of scientific activity</p>
+<p>Kuhn distinguishes between two phases of scientific activity,</p>
 <p><img loading="lazy" src="science.png#center" alt="scientific activity"  />
 </p>
 <ul>
-<li><strong>Normal Science</strong>, which is like puzzle-solving.</li>
-<li><strong>Revolutionary Phase</strong>, which consists of a re-imagining of the basic values, methods, and commitments of the science that Kuhn collectively calls a &ldquo;paradigm&rdquo;.</li>
+<li><strong>Normal Science:</strong> Resembling puzzle-solving.</li>
+<li><strong>Revolutionary Phase:</strong> Involving a fundamental rethinking of the values, methods, and commitments of science, which Kuhn calls a &ldquo;paradigm.&rdquo;</li>
 </ul>
-<p>The following is an example of previous paradigm shift in science.</p>
+<p>Here&rsquo;s an example of a previous paradigm shift in science:</p>
 <p><img loading="lazy" src="science-example.png#center" alt="paradigm shift"  />
 </p>
-<p>And the author wants to investigate the paradigm shift needed in RL.</p>
+<p>The authors explore the paradigm shift needed in RL:</p>
 <p><img loading="lazy" src="rl-paradigm-shift.png#center" alt="rl paradigm shift"  />
 </p>
 <h2 id="dogma-one-the-environment-spotlight">Dogma One: The Environment Spotlight<a hidden class="anchor" aria-hidden="true" href="#dogma-one-the-environment-spotlight">#</a></h2>
@@ -277,10 +277,10 @@
 <p>These questions are important, and require reorienting around this alternate view of learning.</p>
 <p><img loading="lazy" src="standard_continual_rl.png#center" alt="standard rl vs continual rl"  />
 </p>
-<p>The author introduces the following book</p>
+<p>The authors introduce the book &ldquo;Finite and Infinite Games&rdquo;,</p>
 <p><img loading="lazy" src="book2.jpg#center" alt="Finite and Infinite Games"  />
 </p>
-<p>And the idea of Finite and Infinite Games by the following quote from the book</p>
+<p>And the concept of Finite and Infinite Games is summarized in the following quote,</p>
 <blockquote>
 <p>There are at least two kinds of games, One could be called finite; the other infinite. A finite game is played for the purpose of winning, an infinite game for the purpose of continuing the play.</p>
 </blockquote>
@@ -295,7 +295,7 @@
 </p>
 <p><img loading="lazy" src="dogma3pic.png#center" alt="Dogma Three: The Reward Hypothesis"  />
 </p>
-<p>The author suggests that the reward hypothesis is not actually a dogma! However, as we continue our quest for the design of intelligent agents, it is important to recognize the nuance in the hypothesis.</p>
+<p>The authors argue that the reward hypothesis is not truly a dogma. Nevertheless, it is crucial to understand its nuances as we continue to design intelligent agents.</p>
 <p>The reward hypothesis basically says,</p>
 <p><img loading="lazy" src="rewardhyp2.png#center" alt="reward hypothesis"  />
 </p>
@@ -317,7 +317,7 @@ a pair of interpretative assumptions that clarify what it would mean for the rew
 
 <img loading="lazy" src="reward2.png#center" alt="reward hypothesis conditions"  />
 </p>
-<p>It formalizes to the following conjecture</p>
+<p>This leads to the following conjecture,</p>
 <p><img loading="lazy" src="conjecture.png#center" alt="reward conjecture"  />
 </p>
 <p>Then, under this interpretation, a Markov reward function exists to capture a preference relation if and only if the preference relation satisfies the four von Neumann-Morgenstern axioms, and a fifth Bowling et al. call $\gamma$-Temporal Indifference.</p>
@@ -361,10 +361,10 @@ a pair of interpretative assumptions that clarify what it would mean for the rew
 </ul>
 </li>
 </ul>
-<p>By considering the above axioms, the reward conjecture turns into reward theorem,</p>
+<p>Taking these axioms into account, the reward conjecture becomes the reward theorem,</p>
 <p><img loading="lazy" src="theorem.png#center" alt="reward theorem"  />
 </p>
-<p>We also have to take intro account people don&rsquo;t always satisfy all the axioms and humand preference could be different.</p>
+<p>It is essential to consider that people do not always conform to these axioms, and human preferences can vary.</p>
 <p><img loading="lazy" src="rational_human.png#center" alt="human preference"  />
 </p>
 <p>It is important that we are aware of the implicit restrictions we are placing on the viable goals and purposes under consideration when we represent a goal or purpose through a reward signal. We should become familiar with the requirements imposed by the five axioms, and be aware of what specifically we might be giving up when we choose to write down a reward function.</p>

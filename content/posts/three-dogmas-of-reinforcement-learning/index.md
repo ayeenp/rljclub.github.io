@@ -18,17 +18,17 @@ TocOpen: true
 
 ## Introduction
 
-This paper investigates the assumeption that we hold true for modeling reinforcement learning problems and argues how they might be wrong and actually hold us back in our path through modeling of intelligence in the reinforcement learning paradigm. The paper called these assumptions dogmas.
+This paper critically examines the assumptions commonly accepted in modeling reinforcement learning problems, suggesting that these assumptions may impede progress in the field. The authors refer to these assumptions as "dogmas."
 
-> **Dogma: A fixed, especially religious, belief or set of beliefs that people are expected to accept without any doubts.** *--From the [Cambridge Advanced Learner's Dictionary & Thesaurus](https://dictionary.cambridge.org/dictionary/english)*
+> **Dogma: A fixed, especially religious, belief or set of beliefs that people are expected to accept without any doubts.** *—From the [Cambridge Advanced Learner's Dictionary & Thesaurus](https://dictionary.cambridge.org/dictionary/english)*
 
-The paper introduces three dogmas:
+The paper introduces three central dogmas:
 
-- The Environment Spotlight
-- Learning as Finding a Solution
-- The Reward Hypothesis (is not actually a dogma!)
+1. The Environment Spotlight
+2. Learning as Finding a Solution
+3. The Reward Hypothesis (although not exactly a dogma)
 
-The author argues the true reinforcement learning landscape is actualy like this
+The author argues the true reinforcement learning landscape is actualy like this,
 
 ![rl landscape](rl1.png#center)
 
@@ -36,40 +36,40 @@ In the words of Rich Sutton:
 
 > **RL can be viewed as a microcosm of the whole AI problem.**
 
-But the RL today is like the following ☹️
+However, today's RL landscape is overly simplified,
 
 ![rl landscape](rl2.png#center)
 
-And these three dogmas are what shrink the landscape of RL.
+These three dogmas are responsible for narrowing the potential of RL,
 
 ![rl landscape](rl3.png#center)
 
-And argues we should consider getting rid of them.
+The authors propose that we consider moving beyond these dogmas,
 
 ![rl landscape](rl4.png#center)
 
-To restore back the true RL landscape.
+To reclaim the true landscape of RL,
 
 ![rl landscape](rl5.png#center)
 
 ## Background
 
-The author refer to the Thomas Kuhn book
+The authors reference Thomas Kuhn's book, "The Structure of Scientific Revolutions",
 
 ![The Structure of Scientific Revolution](book1.jpg#center)
 
-In which he distinguishes between two phases of scientific activity
+Kuhn distinguishes between two phases of scientific activity,
 
 ![scientific activity](science.png#center)
 
-- **Normal Science**, which is like puzzle-solving.
-- **Revolutionary Phase**, which consists of a re-imagining of the basic values, methods, and commitments of the science that Kuhn collectively calls a "paradigm".
+- **Normal Science:** Resembling puzzle-solving.
+- **Revolutionary Phase:** Involving a fundamental rethinking of the values, methods, and commitments of science, which Kuhn calls a "paradigm."
 
-The following is an example of previous paradigm shift in science.
+Here's an example of a previous paradigm shift in science:
 
 ![paradigm shift](science-example.png#center)
 
-And the author wants to investigate the paradigm shift needed in RL.
+The authors explore the paradigm shift needed in RL:
 
 ![rl paradigm shift](rl-paradigm-shift.png#center)
 
@@ -120,11 +120,11 @@ These questions are important, and require reorienting around this alternate vie
 
 ![standard rl vs continual rl](standard_continual_rl.png#center)
 
-The author introduces the following book
+The authors introduce the book "Finite and Infinite Games",
 
 ![Finite and Infinite Games](book2.jpg#center)
 
-And the idea of Finite and Infinite Games by the following quote from the book
+And the concept of Finite and Infinite Games is summarized in the following quote,
 
 > There are at least two kinds of games, One could be called finite; the other infinite. A finite game is played for the purpose of winning, an infinite game for the purpose of continuing the play.
 
@@ -142,7 +142,7 @@ The third dogma is the reward hypothesis, which states "All of what we mean by g
 
 ![Dogma Three: The Reward Hypothesis](dogma3pic.png#center)
 
-The author suggests that the reward hypothesis is not actually a dogma! However, as we continue our quest for the design of intelligent agents, it is important to recognize the nuance in the hypothesis.
+The authors argue that the reward hypothesis is not truly a dogma. Nevertheless, it is crucial to understand its nuances as we continue to design intelligent agents.
 
 The reward hypothesis basically says,
 
@@ -163,7 +163,7 @@ a pair of interpretative assumptions that clarify what it would mean for the rew
 ![reward hypothesis conditions](reward1.png#center)
 ![reward hypothesis conditions](reward2.png#center)
 
-It formalizes to the following conjecture
+This leads to the following conjecture,
 
 ![reward conjecture](conjecture.png#center)
 
@@ -191,11 +191,11 @@ These 4 axioms are called the von Neumann-Morgenstern axioms.
 - **Axiom 5: Temporal $\boldsymbol{\gamma}$-Indifference >** Discounting is consistent throughout time.
   - Temporal $\gamma$-indifference says that if you are indifferent between receiving a reward at time $t$ and receiving the same reward at time $t+1$, then your preference should not change if we move both time points by the same amount. For instance, if you don't care whether you get a candy today or tomorrow, then you should also not care whether you get the candy next week or the week after.
 
-By considering the above axioms, the reward conjecture turns into reward theorem,
+Taking these axioms into account, the reward conjecture becomes the reward theorem,
 
 ![reward theorem](theorem.png#center)
 
-We also have to take intro account people don't always satisfy all the axioms and humand preference could be different.
+It is essential to consider that people do not always conform to these axioms, and human preferences can vary.
 
 ![human preference](rational_human.png#center)
 
