@@ -2,6 +2,60 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>http://localhost:1313/tags/a2c/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/actor-critic/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/artificial-intelligence/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/continuous-action-space/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/discrete-action-space/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/dqn/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/gui/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/machine-learning/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/naf/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/categories/reinforcement-learning/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/reinforcement-learning/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/sac/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/value-based/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-08-17T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/tags/2024/</loc>
     <lastmod>2024-08-06T00:00:00+00:00</lastmod>
   </url><url>
@@ -17,9 +71,6 @@
     <loc>http://localhost:1313/tags/philosophy/</loc>
     <lastmod>2024-08-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/</loc>
-    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/tags/reward-hypothesis/</loc>
     <lastmod>2024-08-06T00:00:00+00:00</lastmod>
   </url><url>
@@ -29,13 +80,7 @@
     <loc>http://localhost:1313/tags/rlc24/</loc>
     <lastmod>2024-08-06T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
-    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/posts/three-dogmas-of-reinforcement-learning/</loc>
-    <lastmod>2024-08-06T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/</loc>
     <lastmod>2024-08-06T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/tags/2023/</loc>
@@ -80,8 +125,6 @@
     <loc>http://localhost:1313/us/</loc>
   </url><url>
     <loc>http://localhost:1313/archives/</loc>
-  </url><url>
-    <loc>http://localhost:1313/categories/</loc>
   </url><url>
     <loc>http://localhost:1313/search/</loc>
   </url>
