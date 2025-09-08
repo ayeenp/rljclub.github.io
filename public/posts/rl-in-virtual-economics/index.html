@@ -7,22 +7,15 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Rl in Virtual Economics | 🧠 RL Journal Club</title>
 <meta name="keywords" content="">
-<meta name="description" content="Reinforcement Learning in Virtual Economies:
-Table of Contents
+<meta name="description" content="Introduction
+Reinforcement Learning (RL) has moved far beyond academic curiosity—it is now being applied to some of the world’s most complex and dynamic systems, from financial markets to decentralized protocols.
+In particular, RL is reshaping how we think about governance, trading, and risk management in environments where rules are constantly changing.
+This blog explores two major domains where RL is having impact:
 
-Governing DeFi with AI
-DeFi vs Traditional Finance: Lending by Numbers
-The Utilization Curve: How Interest Rates Work in DeFi
-Loan-to-Value (LTV) and Overcollateralization
-Why RL in DeFi Governance?
-The RL Workflow in DeFi
-Results: RL vs Rule-Based Governance
-Conclusion
-References
+Decentralized Finance (DeFi) – where RL agents can govern lending pools, adjust interest rates, and prevent insolvency.
+Algorithmic Trading – where RL agents learn optimal trading strategies directly from market data.
 
-
-Governing DeFi with AI
-Virtual economies are no longer confined to video games. With the rise of cryptocurrencies and Decentralized Finance (DeFi), we now have financial ecosystems that exist entirely on-chain. These systems facilitate lending, borrowing, and trading without traditional intermediaries like banks. Instead, they rely on smart contracts—self-executing code deployed on blockchains.">
+Together, these works show how RL can serve as the decision-making engine of future virtual economies.">
 <meta name="author" content="Mohammadjavad Ahmadpour, Amirmahdi Meighani">
 <link rel="canonical" href="http://localhost:1313/posts/rl-in-virtual-economics/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css" integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY&#43;IJWZFnspCg=" rel="preload stylesheet" as="style">
@@ -175,7 +168,10 @@ Virtual economies are no longer confined to video games. With the rise of crypto
             <span class="details">Table of Contents</span>
         </summary>
 
-        <div class="inner"><ul>
+        <div class="inner"><ul><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li></ul>
+                    
                 <li>
                     <a href="#reinforcement-learning-in-virtual-economies" aria-label="Reinforcement Learning in Virtual Economies:">Reinforcement Learning in Virtual Economies:</a><ul>
                         
@@ -230,7 +226,27 @@ Virtual economies are no longer confined to video games. With the rise of crypto
                     <a href="#governance-agility" aria-label="Governance Agility">Governance Agility</a></li></ul>
                 </li>
                 <li>
-                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a></li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a></li></ul>
+                </li>
+                <li>
+                    <a href="#deep-reinforcement-learning-for-trading" aria-label="Deep Reinforcement Learning for Trading">Deep Reinforcement Learning for Trading</a><ul>
+                        
+                <li>
+                    <a href="#introduction-1" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#table-of-contents-1" aria-label="Table of Contents">Table of Contents</a></li>
+                <li>
+                    <a href="#trading-as-an-mdp" aria-label="Trading as an MDP">Trading as an MDP</a></li>
+                <li>
+                    <a href="#deep-rl-techniques" aria-label="Deep RL Techniques">Deep RL Techniques</a></li>
+                <li>
+                    <a href="#environment-and-training" aria-label="Environment and Training">Environment and Training</a></li>
+                <li>
+                    <a href="#results" aria-label="Results">Results</a></li>
+                <li>
+                    <a href="#challenges-and-limitations" aria-label="Challenges and Limitations">Challenges and Limitations</a></li>
+                <li>
+                    <a href="#conclusion-1" aria-label="Conclusion">Conclusion</a></li>
                 <li>
                     <a href="#references" aria-label="References">References</a>
                 </li>
@@ -241,7 +257,16 @@ Virtual economies are no longer confined to video games. With the rise of crypto
     </details>
 </div>
 
-  <div class="post-content"><h1 id="reinforcement-learning-in-virtual-economies">Reinforcement Learning in Virtual Economies:<a hidden class="anchor" aria-hidden="true" href="#reinforcement-learning-in-virtual-economies">#</a></h1>
+  <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>Reinforcement Learning (RL) has moved far beyond academic curiosity—it is now being applied to some of the world’s most complex and dynamic systems, from <strong>financial markets</strong> to <strong>decentralized protocols</strong>.<br>
+In particular, RL is reshaping how we think about <strong>governance</strong>, <strong>trading</strong>, and <strong>risk management</strong> in environments where rules are constantly changing.</p>
+<p>This blog explores two major domains where RL is having impact:</p>
+<ol>
+<li><strong>Decentralized Finance (DeFi)</strong> – where RL agents can govern lending pools, adjust interest rates, and prevent insolvency.</li>
+<li><strong>Algorithmic Trading</strong> – where RL agents learn optimal trading strategies directly from market data.</li>
+</ol>
+<p>Together, these works show how RL can serve as the <strong>decision-making engine</strong> of future virtual economies.</p>
+<h1 id="reinforcement-learning-in-virtual-economies">Reinforcement Learning in Virtual Economies:<a hidden class="anchor" aria-hidden="true" href="#reinforcement-learning-in-virtual-economies">#</a></h1>
 <h2 id="table-of-contents">Table of Contents<a hidden class="anchor" aria-hidden="true" href="#table-of-contents">#</a></h2>
 <ul>
 <li><a href="#Governing-DeFi-with-AI">Governing DeFi with AI</a></li>
@@ -436,14 +461,77 @@ The agent’s learned strategy for choosing actions.</p>
 </ul>
 <p>As shown in <strong>Auto.gov</strong> and <strong>TD3-BC</strong>, RL-based agents outperform static rule-based models, improving profitability, liquidity, and systemic resilience.</p>
 <p>In many ways, RL could serve as the <strong>central bank of DeFi</strong>—a governor that adjusts policy dynamically, balancing borrower needs with lender rewards, ensuring that decentralized economies remain stable and sustainable.</p>
+<hr>
+<h1 id="deep-reinforcement-learning-for-trading">Deep Reinforcement Learning for Trading<a hidden class="anchor" aria-hidden="true" href="#deep-reinforcement-learning-for-trading">#</a></h1>
+<h2 id="introduction-1">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction-1">#</a></h2>
+<p>Financial trading is a natural environment for <strong>Reinforcement Learning (RL)</strong>. Markets are dynamic, uncertain, and reward-driven—making them well-suited to RL’s trial-and-error learning framework.<br>
+In their work, <em>Deep Reinforcement Learning for Trading</em> (<a href="https://arxiv.org/abs/1911.10107">Deng et al., 2019</a>), the authors show how RL can be applied to design <strong>adaptive trading strategies</strong> that outperform traditional rule-based methods.</p>
+<hr>
+<h2 id="table-of-contents-1">Table of Contents<a hidden class="anchor" aria-hidden="true" href="#table-of-contents-1">#</a></h2>
+<ul>
+<li><a href="#trading-as-an-mdp">Trading as an MDP</a></li>
+<li><a href="#deep-rl-techniques">Deep RL Techniques</a></li>
+<li><a href="#environment-and-training">Environment and Training</a></li>
+<li><a href="#results">Results</a></li>
+<li><a href="#challenges-and-limitations">Challenges and Limitations</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+<hr>
+<h2 id="trading-as-an-mdp">Trading as an MDP<a hidden class="anchor" aria-hidden="true" href="#trading-as-an-mdp">#</a></h2>
+<p>The authors model trading as a <strong>Markov Decision Process (MDP)</strong>:</p>
+<ul>
+<li><strong>State (S):</strong> Market indicators (e.g., price history, volume, technical factors).</li>
+<li><strong>Action (A):</strong> Buy, sell, or hold.</li>
+<li><strong>Reward (R):</strong> Profit &amp; Loss (PnL), adjusted for transaction fees and sometimes risk measures.</li>
+</ul>
+<p>This formulation allows RL agents to optimize strategies based not only on short-term profits but also <strong>risk-adjusted returns</strong> over time.</p>
+<hr>
+<h2 id="deep-rl-techniques">Deep RL Techniques<a hidden class="anchor" aria-hidden="true" href="#deep-rl-techniques">#</a></h2>
+<p>Several RL algorithms are explored for trading:</p>
+<ul>
+<li><strong>Deep Q-Networks (DQN):</strong> Learn discrete trading policies (buy/sell/hold).</li>
+<li><strong>Policy Gradient Methods:</strong> Directly optimize trading policies.</li>
+<li><strong>Actor-Critic Methods:</strong> Combine value-based and policy-based approaches for more stable learning.</li>
+</ul>
+<p>Each method has strengths—DQN handles discrete decisions well, while actor-critic models adapt better to continuous and noisy markets.</p>
+<hr>
+<h2 id="environment-and-training">Environment and Training<a hidden class="anchor" aria-hidden="true" href="#environment-and-training">#</a></h2>
+<ul>
+<li><strong>Historical Market Data:</strong> Training is performed on past stock and cryptocurrency data.</li>
+<li><strong>Simulated Market Environment:</strong> Allows safe exploration before live trading.</li>
+<li><strong>Feature Engineering:</strong> Market indicators, momentum signals, and volatility are fed into deep neural networks.</li>
+</ul>
+<hr>
+<h2 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h2>
+<ul>
+<li>RL agents <strong>outperform rule-based baselines</strong> like moving-average crossovers.</li>
+<li><strong>Adaptability:</strong> RL policies respond better to shifts between bullish and bearish markets.</li>
+<li><strong>Risk Awareness:</strong> Reward functions that include Sharpe ratio or volatility lead to more robust strategies.<br>
+<img loading="lazy" src="tr-res.png" alt="Cumulative trade returns for First row: commodity, equity index and fixed income; Second row: FX and the portfolio of using all contracts."  />
+</li>
+</ul>
+<hr>
+<h2 id="challenges-and-limitations">Challenges and Limitations<a hidden class="anchor" aria-hidden="true" href="#challenges-and-limitations">#</a></h2>
+<p>While promising, RL trading systems face several hurdles:</p>
+<ul>
+<li><strong>Overfitting:</strong> RL agents may learn patterns that don’t generalize.</li>
+<li><strong>Sample inefficiency:</strong> Deep RL requires large amounts of data.</li>
+<li><strong>Execution risk:</strong> Live deployment must handle latency, slippage, and adversarial conditions.</li>
+</ul>
+<hr>
+<h2 id="conclusion-1">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion-1">#</a></h2>
+<p>Deep Reinforcement Learning offers a powerful new approach to trading by:</p>
+<ul>
+<li>Learning strategies <strong>directly from data</strong> instead of handcrafted rules.</li>
+<li>Adapting to <strong>non-stationary market conditions</strong>.</li>
+<li>Balancing risk and reward more effectively than traditional methods.</li>
+</ul>
+<p>However, robust deployment requires careful design to avoid overfitting and ensure stability in real markets.</p>
+<hr>
 <h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
 <ol>
-<li>
-<p>Xu, J., Feng, Y., Perez, D., &amp; Livshits, B. (2025). <strong>Auto.gov: Learning-based Governance for Decentralized Finance (DeFi)</strong>. <em>IEEE Transactions on Services Computing</em>. <a href="https://arxiv.org/abs/2302.09551">arXiv:2302.09551</a>.</p>
-</li>
-<li>
-<p>Qu, H., Gogol, K. M., Grötschla, F., &amp; Tessone, C. J. (2025). <strong>From Rules to Rewards: Reinforcement Learning for Interest Rate Adjustment in DeFi Lending</strong>. <em>arXiv preprint</em>. <a href="https://arxiv.org/abs/2506.00505">arXiv:2506.00505</a>.</p>
-</li>
+<li>Zihao Zhang, Stefan Zohren, Stephen Roberts. (2019). <strong>Deep Reinforcement Learning for Trading</strong>. <em>arXiv preprint</em>. <a href="https://arxiv.org/abs/1911.10107">arXiv:1911.10107</a>.</li>
 </ol>
 
 

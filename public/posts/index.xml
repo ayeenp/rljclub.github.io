@@ -13,10 +13,10 @@
       <link>http://localhost:1313/posts/rl-in-virtual-economics/</link>
       <pubDate>Sun, 07 Sep 2025 15:49:28 +0330</pubDate>
       <guid>http://localhost:1313/posts/rl-in-virtual-economics/</guid>
-      <description>&lt;h1 id=&#34;reinforcement-learning-in-virtual-economies-governing-defi-with-ai&#34;&gt;Reinforcement Learning in Virtual Economies: Governing DeFi with AI&lt;/h1&gt;
+      <description>&lt;h1 id=&#34;reinforcement-learning-in-virtual-economies&#34;&gt;Reinforcement Learning in Virtual Economies:&lt;/h1&gt;
 &lt;h2 id=&#34;table-of-contents&#34;&gt;Table of Contents&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#Governing-DeFi-with-AI&#34;&gt;Governing DeFi with AI&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#defi-vs-traditional-finance-lending-by-numbers&#34;&gt;DeFi vs Traditional Finance: Lending by Numbers&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#the-utilization-curve-how-interest-rates-work-in-defi&#34;&gt;The Utilization Curve: How Interest Rates Work in DeFi&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#loan-to-value-ltv-and-overcollateralization&#34;&gt;Loan-to-Value (LTV) and Overcollateralization&lt;/a&gt;&lt;/li&gt;
@@ -27,7 +27,7 @@
 &lt;li&gt;&lt;a href=&#34;#references&#34;&gt;References&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;hr&gt;
-&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;h2 id=&#34;governing-defi-with-ai&#34;&gt;Governing DeFi with AI&lt;/h2&gt;
 &lt;p&gt;Virtual economies are no longer confined to video games. With the rise of &lt;strong&gt;cryptocurrencies&lt;/strong&gt; and &lt;strong&gt;Decentralized Finance (DeFi)&lt;/strong&gt;, we now have financial ecosystems that exist entirely on-chain. These systems facilitate lending, borrowing, and trading without traditional intermediaries like banks. Instead, they rely on &lt;strong&gt;smart contracts&lt;/strong&gt;—self-executing code deployed on blockchains.&lt;/p&gt;</description>
     </item>
     <item>

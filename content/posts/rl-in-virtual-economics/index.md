@@ -9,6 +9,19 @@ cover:
 ShowToc: true
 TocOpen: true
 ---
+
+
+## Introduction
+Reinforcement Learning (RL) has moved far beyond academic curiosity—it is now being applied to some of the world’s most complex and dynamic systems, from **financial markets** to **decentralized protocols**.  
+In particular, RL is reshaping how we think about **governance**, **trading**, and **risk management** in environments where rules are constantly changing.  
+
+This blog explores two major domains where RL is having impact:  
+1. **Decentralized Finance (DeFi)** – where RL agents can govern lending pools, adjust interest rates, and prevent insolvency.  
+2. **Algorithmic Trading** – where RL agents learn optimal trading strategies directly from market data.  
+
+Together, these works show how RL can serve as the **decision-making engine** of future virtual economies.
+
+
 # Reinforcement Learning in Virtual Economies: 
 
 ## Table of Contents
@@ -199,7 +212,81 @@ As shown in **Auto.gov** and **TD3-BC**, RL-based agents outperform static rule-
 
 In many ways, RL could serve as the **central bank of DeFi**—a governor that adjusts policy dynamically, balancing borrower needs with lender rewards, ensuring that decentralized economies remain stable and sustainable.
 
-## References
-1. Xu, J., Feng, Y., Perez, D., & Livshits, B. (2025). **Auto.gov: Learning-based Governance for Decentralized Finance (DeFi)**. *IEEE Transactions on Services Computing*. [arXiv:2302.09551](https://arxiv.org/abs/2302.09551).  
 
-2. Qu, H., Gogol, K. M., Grötschla, F., & Tessone, C. J. (2025). **From Rules to Rewards: Reinforcement Learning for Interest Rate Adjustment in DeFi Lending**. *arXiv preprint*. [arXiv:2506.00505](https://arxiv.org/abs/2506.00505).  
+
+---
+# Deep Reinforcement Learning for Trading
+
+## Introduction
+Financial trading is a natural environment for **Reinforcement Learning (RL)**. Markets are dynamic, uncertain, and reward-driven—making them well-suited to RL’s trial-and-error learning framework.  
+In their work, *Deep Reinforcement Learning for Trading* ([Deng et al., 2019](https://arxiv.org/abs/1911.10107)), the authors show how RL can be applied to design **adaptive trading strategies** that outperform traditional rule-based methods.
+
+---
+
+## Table of Contents
+- [Trading as an MDP](#trading-as-an-mdp)  
+- [Deep RL Techniques](#deep-rl-techniques)  
+- [Environment and Training](#environment-and-training)  
+- [Results](#results)  
+- [Challenges and Limitations](#challenges-and-limitations)  
+- [Conclusion](#conclusion)  
+- [References](#references)  
+
+---
+
+## Trading as an MDP
+The authors model trading as a **Markov Decision Process (MDP)**:
+
+- **State (S):** Market indicators (e.g., price history, volume, technical factors).  
+- **Action (A):** Buy, sell, or hold.  
+- **Reward (R):** Profit & Loss (PnL), adjusted for transaction fees and sometimes risk measures.  
+
+This formulation allows RL agents to optimize strategies based not only on short-term profits but also **risk-adjusted returns** over time.
+
+---
+
+## Deep RL Techniques
+Several RL algorithms are explored for trading:  
+
+- **Deep Q-Networks (DQN):** Learn discrete trading policies (buy/sell/hold).  
+- **Policy Gradient Methods:** Directly optimize trading policies.  
+- **Actor-Critic Methods:** Combine value-based and policy-based approaches for more stable learning.  
+
+Each method has strengths—DQN handles discrete decisions well, while actor-critic models adapt better to continuous and noisy markets.
+
+---
+
+## Environment and Training
+- **Historical Market Data:** Training is performed on past stock and cryptocurrency data.  
+- **Simulated Market Environment:** Allows safe exploration before live trading.  
+- **Feature Engineering:** Market indicators, momentum signals, and volatility are fed into deep neural networks.  
+
+---
+
+## Results
+- RL agents **outperform rule-based baselines** like moving-average crossovers.  
+- **Adaptability:** RL policies respond better to shifts between bullish and bearish markets.  
+- **Risk Awareness:** Reward functions that include Sharpe ratio or volatility lead to more robust strategies.  
+![Cumulative trade returns for First row: commodity, equity index and fixed income; Second row: FX and the portfolio of using all contracts.](tr-res.png)
+---
+
+## Challenges and Limitations
+While promising, RL trading systems face several hurdles:  
+- **Overfitting:** RL agents may learn patterns that don’t generalize.  
+- **Sample inefficiency:** Deep RL requires large amounts of data.  
+- **Execution risk:** Live deployment must handle latency, slippage, and adversarial conditions.  
+
+---
+
+## Conclusion
+Deep Reinforcement Learning offers a powerful new approach to trading by:  
+- Learning strategies **directly from data** instead of handcrafted rules.  
+- Adapting to **non-stationary market conditions**.  
+- Balancing risk and reward more effectively than traditional methods.  
+
+However, robust deployment requires careful design to avoid overfitting and ensure stability in real markets.
+
+---
+
+## References
+1. Zihao Zhang, Stefan Zohren, Stephen Roberts. (2019). **Deep Reinforcement Learning for Trading**. *arXiv preprint*. [arXiv:1911.10107](https://arxiv.org/abs/1911.10107).  
