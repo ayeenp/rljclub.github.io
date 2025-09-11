@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Aligning Text to Image Models With Human Preferences Using Direct Preference Optimization | 🧠 RL Journal Club</title>
+<meta name="keywords" content="">
+<meta name="description" content="This presentation explores Direct Preference Optimization (DPO), a groundbreaking technique for aligning large-scale generative models with human preferences. We&#39;ll cover its theoretical foundations, its application to diffusion-based image models, and what the future holds for this powerful alignment method.">
+<meta name="author" content="Ashkan Majidi, Parsa Ghezelbash">
+<link rel="canonical" href="http://localhost:1313/posts/aligning-text-to-image-models-with-human-preferences-using-direct-preference-optimization/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css" integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY&#43;IJWZFnspCg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/aligning-text-to-image-models-with-human-preferences-using-direct-preference-optimization/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="🗃️ Archive">
+                    <span>🗃️ Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="🔍 Search">
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/us/" title="👤 Us">
+                    <span>👤 Us</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Aligning Text to Image Models With Human Preferences Using Direct Preference Optimization
+    </h1>
+    <div class="post-description">
+      This presentation explores Direct Preference Optimization (DPO), a groundbreaking technique for aligning large-scale generative models with human preferences. We&#39;ll cover its theoretical foundations, its application to diffusion-based image models, and what the future holds for this powerful alignment method.
+    </div>
+    <div class="post-meta"><span title='2025-09-11 00:00:00 +0000 UTC'>September 11, 2025</span>&nbsp;·&nbsp;Ashkan Majidi, Parsa Ghezelbash
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#aligning-text-to-image-models-with-human-preferences-using-direct-preference-optimization" aria-label="Aligning Text to Image Models with Human Preferences Using Direct Preference Optimization">Aligning Text to Image Models with Human Preferences Using Direct Preference Optimization</a><ul>
+                        
+                <li>
+                    <a href="#1-the-ai-alignment-problem-why-dont-models-just-work" aria-label="1. The AI Alignment Problem: Why Don&rsquo;t Models Just Work?">1. The AI Alignment Problem: Why Don&rsquo;t Models Just Work?</a></li>
+                <li>
+                    <a href="#2-the-old-way-reinforcement-learning-from-human-feedback-rlhf" aria-label="2. The &ldquo;Old Way&rdquo;: Reinforcement Learning from Human Feedback (RLHF)">2. The &ldquo;Old Way&rdquo;: Reinforcement Learning from Human Feedback (RLHF)</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#the-three-step-rlhf-pipeline" aria-label="The Three-Step RLHF Pipeline:">The Three-Step RLHF Pipeline:</a></li>
+                <li>
+                    <a href="#the-downsides-of-rlhf" aria-label="The Downsides of RLHF">The Downsides of RLHF</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#3-the-breakthrough-direct-preference-optimization-dpo" aria-label="3. The Breakthrough: Direct Preference Optimization (DPO)">3. The Breakthrough: Direct Preference Optimization (DPO)</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#the-core-insight-your-language-model-is-secretly-a-reward-model" aria-label="The Core Insight: Your Language Model is Secretly a Reward Model">The Core Insight: Your Language Model is Secretly a Reward Model</a></li>
+                <li>
+                    <a href="#from-rl-to-a-simple-loss" aria-label="From RL to a Simple Loss">From RL to a Simple Loss</a></li>
+                <li>
+                    <a href="#why-its-better" aria-label="Why It&rsquo;s Better">Why It&rsquo;s Better</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#5-expanding-the-horizon-dpo-for-diffusion-models" aria-label="5. Expanding the Horizon: DPO for Diffusion Models">5. Expanding the Horizon: DPO for Diffusion Models</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#the-challenge-intractable-likelihood" aria-label="The Challenge: Intractable Likelihood">The Challenge: Intractable Likelihood</a></li>
+                <li>
+                    <a href="#the-solution-diffusion-dpo" aria-label="The Solution: Diffusion-DPO">The Solution: Diffusion-DPO</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#6-diffusion-dpo-in-action-creating-better-images" aria-label="6. Diffusion-DPO in Action: Creating Better Images">6. Diffusion-DPO in Action: Creating Better Images</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#performance" aria-label="Performance">Performance</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#7-the-future-is-aligned" aria-label="7. The Future is Aligned">7. The Future is Aligned</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#key-takeaway" aria-label="Key Takeaway">Key Takeaway</a></li>
+                <li>
+                    <a href="#whats-next" aria-label="What&rsquo;s Next?">What&rsquo;s Next?</a></li></ul>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#8-references--further-reading" aria-label="8. References &amp; Further Reading">8. References &amp; Further Reading</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="aligning-text-to-image-models-with-human-preferences-using-direct-preference-optimization">Aligning Text to Image Models with Human Preferences Using Direct Preference Optimization<a hidden class="anchor" aria-hidden="true" href="#aligning-text-to-image-models-with-human-preferences-using-direct-preference-optimization">#</a></h1>
+<p>This presentation explores Direct Preference Optimization (DPO), a groundbreaking technique for aligning large-scale generative models with human preferences. We&rsquo;ll cover its theoretical foundations, its application to diffusion-based image models, and what the future holds for this powerful alignment method.
+![[dpo_aligned.png]]</p>
+<hr>
+<h2 id="1-the-ai-alignment-problem-why-dont-models-just-work">1. The AI Alignment Problem: Why Don&rsquo;t Models Just Work?<a hidden class="anchor" aria-hidden="true" href="#1-the-ai-alignment-problem-why-dont-models-just-work">#</a></h2>
+<p>Large-scale models are trained on vast, unfiltered datasets from the internet. While this teaches them incredible world knowledge and generative capabilities, it doesn&rsquo;t inherently teach them what humans find helpful, safe, or high-quality. This is the <strong>alignment problem</strong>.</p>
+<ul>
+<li><strong>For Language Models (LLMs):</strong> Without alignment, models can produce responses that are unhelpful, factually incorrect, toxic, or simply fail to follow user instructions. They might imitate undesirable patterns seen in their training data.</li>
+<li><strong>For Diffusion Models (Images):</strong> Base models often struggle to precisely follow complex prompts, lack aesthetic appeal, or generate bizarre artifacts.</li>
+</ul>
+<!-- raw HTML omitted -->
+<blockquote>
+<p><strong>The Core Task:</strong> How can we efficiently fine-tune these powerful pretrained models to align with our preferences?</p>
+<p>We formalize this using preference data: Given a prompt $x$, we collect data where humans have chosen a &ldquo;winning&rdquo; response $y_w$ over a &ldquo;losing&rdquo; response $y_l$.
+$$ (y_w \succ y_l \mid x) $$</p></blockquote>
+<p>Our goal is to use this data to steer the model&rsquo;s behavior.
+![[Alignment.png]]</p>
+<hr>
+<h2 id="2-the-old-way-reinforcement-learning-from-human-feedback-rlhf">2. The &ldquo;Old Way&rdquo;: Reinforcement Learning from Human Feedback (RLHF)<a hidden class="anchor" aria-hidden="true" href="#2-the-old-way-reinforcement-learning-from-human-feedback-rlhf">#</a></h2>
+<p>For years, the gold standard for alignment was <strong>Reinforcement Learning from Human Feedback (RLHF)</strong>. It&rsquo;s a powerful but complex multi-stage process.</p>
+<h4 id="the-three-step-rlhf-pipeline">The Three-Step RLHF Pipeline:<a hidden class="anchor" aria-hidden="true" href="#the-three-step-rlhf-pipeline">#</a></h4>
+<ol>
+<li><strong>Supervised Fine-Tuning (SFT):</strong> A pretrained model is fine-tuned on a small, high-quality dataset of prompt-response pairs. This adapts the model to the desired output format (e.g., chatbot-style conversation).</li>
+<li><strong>Reward Model (RM) Training:</strong> A separate model is trained to predict which response a human would prefer. It takes the prompt $x$ and a response $y$ and outputs a scalar reward score, $r(x, y)$. This model is trained on the preference dataset $(y_w, y_l)$ using a loss that encourages $r(x, y_w) &gt; r(x, y_l)$. The standard approach uses the Bradley-Terry model for pairwise preferences:
+$$ p(y_w \succ y_l | x) = \sigma(r(x,y_w) - r(x,y_l)) $$
+The reward model is trained by minimizing the negative log-likelihood of this preference data:
+$$ \mathcal{L}<em>{\text{RM}} = - \mathbb{E}</em>{(x, y_w, y_l) \sim \mathcal{D}} \left[ \log \sigma(r_\phi(x, y_w) - r_\phi(x, y_l)) \right] $$</li>
+<li><strong>RL Fine-Tuning (PPO):</strong> The SFT model is further fine-tuned using the trained reward model as the reward function. An RL algorithm like Proximal Policy Optimization (PPO) is used to maximize the expected reward, with a KL-divergence penalty to prevent the model from straying too far from the original SFT model ($\pi_{\text{ref}}$).
+$$ \max_{\theta} \mathbb{E}<em>{y \sim \pi</em>\theta(y|x)} [r(x, y)] - \beta D_{KL}(\pi_\theta(y|x) | \pi_{\text{ref}}(y|x)) $$</li>
+</ol>
+<p><img loading="lazy" src="rlhf.png" alt="RLHF Pipeline Diagram"  />
+</p>
+<h4 id="the-downsides-of-rlhf">The Downsides of RLHF<a hidden class="anchor" aria-hidden="true" href="#the-downsides-of-rlhf">#</a></h4>
+<p>While effective, RLHF is notoriously difficult to work with:</p>
+<ul>
+<li><strong>Complex Pipeline:</strong> Juggling multiple models (SFT, RM, policy, and value models for PPO) is a massive engineering challenge.</li>
+<li><strong>Training Instability:</strong> RL fine-tuning is sensitive to hyperparameters and can easily diverge.</li>
+<li><strong>Resource Intensive:</strong> Sampling from the large generative model during RL training is computationally expensive.</li>
+</ul>
+<hr>
+<h2 id="3-the-breakthrough-direct-preference-optimization-dpo">3. The Breakthrough: Direct Preference Optimization (DPO)<a hidden class="anchor" aria-hidden="true" href="#3-the-breakthrough-direct-preference-optimization-dpo">#</a></h2>
+<p>DPO simplifies the alignment process by getting rid of the explicit reward modeling and reinforcement learning steps. It directly optimizes the language model on preference data.</p>
+<h4 id="the-core-insight-your-language-model-is-secretly-a-reward-model">The Core Insight: Your Language Model is Secretly a Reward Model<a hidden class="anchor" aria-hidden="true" href="#the-core-insight-your-language-model-is-secretly-a-reward-model">#</a></h4>
+<p>The key insight from the DPO paper (Rafailov et al., 2024) is that the optimal solution to the KL-constrained RL objective has a special form:
+$$ \pi_r(y|x) = \frac{1}{Z(x)} \pi_{\text{ref}}(y|x) \exp\left(\frac{1}{\beta} r(x,y)\right) $$
+where $Z(x)$ is a partition function that normalizes the distribution.</p>
+<p>This equation can be algebraically rearranged to define the optimal reward function $r(x,y)$ in terms of the optimal policy $\pi_r$ and the reference policy $\pi_{\text{ref}}$:
+$$ r(x,y) = \beta \log\frac{\pi_r(y|x)}{\pi_{\text{ref}}(y|x)} + \beta \log Z(x) $$</p>
+<h4 id="from-rl-to-a-simple-loss">From RL to a Simple Loss<a hidden class="anchor" aria-hidden="true" href="#from-rl-to-a-simple-loss">#</a></h4>
+<p>When we substitute this reparameterized reward function back into the original reward model loss, the intractable partition function term $\beta \log Z(x)$ <strong>cancels out perfectly</strong> for the winning ($y_w$) and losing ($y_l$) pair.</p>
+<p>This leaves us with a simple objective that depends only on the policy we are trying to train ($\pi_\theta$) and the reference policy ($\pi_{\text{ref}}$):</p>
+<p>$$
+\mathcal{L}<em>{\text{DPO}}(\pi</em>{\theta}; \pi_{\text{ref}}) = -\mathbb{E}<em>{(x, y_w, y_l)\sim \mathcal{D}} \left[\log \sigma \left(\beta \log \frac{\pi</em>{\theta}(y_w\mid x)}{\pi_{\text{ref}}(y_w\mid x)} - \beta \log \frac{\pi_{\theta}(y_l\mid x)}{\pi_{\text{ref}}(y_l\mid x)}\right)\right]
+$$</p>
+<p>This is a simple binary cross-entropy loss! We are directly optimizing the language model to satisfy the preferences. The term inside the sigmoid acts as an implicit reward: we want the log-probability ratio to be higher for the winning response than for the losing one.</p>
+<h4 id="why-its-better">Why It&rsquo;s Better<a hidden class="anchor" aria-hidden="true" href="#why-its-better">#</a></h4>
+<ul>
+<li><strong>Simple:</strong> No separate reward model training. No complex RL pipeline. It&rsquo;s just a new loss function.</li>
+<li><strong>Stable:</strong> Far more stable than PPO, as it avoids the instabilities of reinforcement learning.</li>
+<li><strong>Efficient:</strong> Computationally lightweight. It doesn&rsquo;t require sampling from the model during training.</li>
+</ul>
+<hr>
+<h2 id="5-expanding-the-horizon-dpo-for-diffusion-models">5. Expanding the Horizon: DPO for Diffusion Models<a hidden class="anchor" aria-hidden="true" href="#5-expanding-the-horizon-dpo-for-diffusion-models">#</a></h2>
+<p>The success of DPO on LLMs raised a question: can this principle be applied to other generative domains like image generation? The answer is yes, but it required a clever adaptation.</p>
+<h4 id="the-challenge-intractable-likelihood">The Challenge: Intractable Likelihood<a hidden class="anchor" aria-hidden="true" href="#the-challenge-intractable-likelihood">#</a></h4>
+<p>The DPO loss function relies on the model&rsquo;s likelihood, $\pi_\theta(y|x)$. For LLMs (autoregressive models), this is easy to compute. For diffusion models, the likelihood $p_\theta(x_0|c)$ is intractable to compute directly.</p>
+<h4 id="the-solution-diffusion-dpo">The Solution: Diffusion-DPO<a hidden class="anchor" aria-hidden="true" href="#the-solution-diffusion-dpo">#</a></h4>
+<p>The Diffusion-DPO paper (Wallace et al., 2023) solves this by using the <strong>Evidence Lower Bound (ELBO)</strong>, a well-known proxy for the log-likelihood in variational inference. By substituting the ELBO for the log-likelihood and making several simplifying assumptions, they derive a new loss function for diffusion models.</p>
+<p>The final Diffusion-DPO loss is an upper bound on the original DPO objective. Instead of working with probabilities, it works with the model&rsquo;s predicted <strong>denoising errors</strong>:</p>
+<p>$$
+\mathcal{L}<em>{\text{D-DPO}} \propto - \mathbb{E} \left[ \log\sigma \left( \beta&rsquo; \left( (\epsilon</em>{\text{diff}}^l)^2 - (\epsilon_{\text{diff}}^w)^2 \right) \right) \right]
+$$</p>
+<p>where</p>
+<ul>
+<li>$\epsilon_{\text{diff}}^w = | \epsilon^w - \epsilon_\theta(x_t^w, t, c) |^2 - | \epsilon^w - \epsilon_{\text{ref}}(x_t^w, t, c) |^2$</li>
+<li>$\epsilon_{\text{diff}}^l = | \epsilon^l - \epsilon_\theta(x_t^l, t, c) |^2 - | \epsilon^l - \epsilon_{\text{ref}}(x_t^l, t, c) |^2$</li>
+</ul>
+<p>In simple terms, the loss encourages the denoising error of the trained model $\epsilon_\theta$ (relative to the reference model $\epsilon_{\text{ref}}$) to be <strong>smaller for the preferred image ($y_w$)</strong> and <strong>larger for the dispreferred image ($y_l$)</strong>.</p>
+<p><img loading="lazy" src="loss_surface.png" alt="Diffusion-DPO Loss Surface"  />
+</p>
+<hr>
+<h2 id="6-diffusion-dpo-in-action-creating-better-images">6. Diffusion-DPO in Action: Creating Better Images<a hidden class="anchor" aria-hidden="true" href="#6-diffusion-dpo-in-action-creating-better-images">#</a></h2>
+<p>Using the Pick-a-Pic dataset of over 850k human preferences, the authors fine-tuned the state-of-the-art Stable Diffusion XL (SDXL) model.</p>
+<h4 id="performance">Performance<a hidden class="anchor" aria-hidden="true" href="#performance">#</a></h4>
+<p>The Diffusion-DPO fine-tuned model <strong>significantly outperformed</strong> both the base SDXL model and the much larger SDXL model with its refiner module in human evaluations for both visual appeal and prompt alignment.</p>
+<p><img loading="lazy" src="dpo_copmarison_boxed.png" alt="Diffusion Win Rate Chart"  />
+</p>
+<hr>
+<h2 id="7-the-future-is-aligned">7. The Future is Aligned<a hidden class="anchor" aria-hidden="true" href="#7-the-future-is-aligned">#</a></h2>
+<p>DPO is more than just a single algorithm; it&rsquo;s a powerful and generalizable framework for aligning AI with human (or even AI-generated) preferences.</p>
+<h4 id="key-takeaway">Key Takeaway<a hidden class="anchor" aria-hidden="true" href="#key-takeaway">#</a></h4>
+<p>By recasting preference learning as a simple classification problem, DPO provides a <strong>stable, efficient, and highly effective</strong> alternative to complex RLHF pipelines, applicable across different model architectures and data modalities.</p>
+<h4 id="whats-next">What&rsquo;s Next?<a hidden class="anchor" aria-hidden="true" href="#whats-next">#</a></h4>
+<ul>
+<li><strong>Personalization:</strong> Fine-tuning models to individual or group-specific preferences (e.g., a photographer&rsquo;s personal artistic style).</li>
+<li><strong>Learning from AI Feedback (RLAIF):</strong> Using a powerful existing model (like GPT-4 or Gemini) to generate preference labels at a massive scale, enabling even more powerful alignment.</li>
+<li><strong>New Modalities:</strong> Applying the DPO principle to other generative domains like <strong>video, 3D models, and music generation</strong>.</li>
+</ul>
+<hr>
+<h2 id="8-references--further-reading">8. References &amp; Further Reading<a hidden class="anchor" aria-hidden="true" href="#8-references--further-reading">#</a></h2>
+<ul>
+<li>Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., &amp; Finn, C. (2024). <em>Direct Preference Optimization: Your Language Model is Secretly a Reward Model</em>. arXiv preprint arXiv:2305.18290.</li>
+<li>Wallace, B., Dang, M., Rafailov, R., Zhou, L., Lou, A., Purushwalkam, S., Ermon, S., Xiong, C., Toyer, S., &amp; Naik, N. (2023). <em>Diffusion Model Alignment Using Direct Preference Optimization</em>. arXiv preprint arXiv:2311.12908.</li>
+<li>Owen Oertell, Jonathan D. Chang, Yiyi Zhang, Kianté Brantley, &amp; Wen Sun. (2024). RL for Consistency Models: Faster Reward Guided Text-to-Image Generation.</li>
+<li>Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, &amp; Sergey Levine. (2024). Training Diffusion Models with Reinforcement Learning.</li>
+<li>Yuval Kirstain, Adam Polyak, Uriel Singer, Shahbuland Matiana, Joe Penna, &amp; Omer Levy. (2023). Pick-a-Pic: An Open Dataset of User Preferences for Text-to-Image Generation.</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "rljclub-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
