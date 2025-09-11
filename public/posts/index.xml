@@ -4,10 +4,27 @@
     <title>Posts on 🧠 RL Journal Club</title>
     <link>http://localhost:1313/posts/</link>
     <description>Recent content in Posts on 🧠 RL Journal Club</description>
-    <generator>Hugo -- 0.129.0</generator>
+    <generator>Hugo -- 0.150.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 10 Sep 2025 22:55:00 +0330</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Adversarial RL</title>
+      <link>http://localhost:1313/posts/adversarial-rl/</link>
+      <pubDate>Wed, 10 Sep 2025 22:55:00 +0330</pubDate>
+      <guid>http://localhost:1313/posts/adversarial-rl/</guid>
+      <description>&lt;h1 id=&#34;adversarial-attacks-on-reinforcement-learning-policies&#34;&gt;Adversarial Attacks on Reinforcement Learning Policies&lt;/h1&gt;
+&lt;p&gt;Reinforcement Learning (RL) has powered breakthroughs in games, robotics, and autonomous systems. But just like image classifiers can be fooled by carefully crafted adversarial examples, RL agents are also vulnerable to &lt;strong&gt;adversarial attacks&lt;/strong&gt;. These attacks can manipulate the agent’s perception of the environment or its decision process, leading to unsafe or suboptimal behavior.&lt;/p&gt;
+&lt;h2 id=&#34;what-do-adversarial-attacks-mean-in-rl&#34;&gt;What Do Adversarial Attacks Mean in RL?&lt;/h2&gt;
+&lt;p&gt;In RL, an agent interacts with an environment, observes a state, takes an action, and receives a reward. An adversarial attack interferes with this process—often by perturbing the input observations—so the agent chooses actions that look reasonable to it but are actually harmful.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Actor-Critic vs. Value-Based: Empirical Trade-offs</title>
+      <link>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</guid>
+      <description>An empirical comparison of Value-Based and Actor-Critic reinforcement learning algorithms across discrete and continuous action spaces, analyzing trade-offs in convergence speed, stability, and performance.</description>
+    </item>
     <item>
       <title>Three Dogmas of Reinforcement Learning</title>
       <link>http://localhost:1313/posts/three-dogmas-of-reinforcement-learning/</link>

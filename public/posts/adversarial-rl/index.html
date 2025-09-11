@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Adversarial RL | 🧠 RL Journal Club</title>
+<meta name="keywords" content="">
+<meta name="description" content="Adversarial Attacks on Reinforcement Learning Policies
+Reinforcement Learning (RL) has powered breakthroughs in games, robotics, and autonomous systems. But just like image classifiers can be fooled by carefully crafted adversarial examples, RL agents are also vulnerable to adversarial attacks. These attacks can manipulate the agent’s perception of the environment or its decision process, leading to unsafe or suboptimal behavior.
+What Do Adversarial Attacks Mean in RL?
+In RL, an agent interacts with an environment, observes a state, takes an action, and receives a reward. An adversarial attack interferes with this process—often by perturbing the input observations—so the agent chooses actions that look reasonable to it but are actually harmful.">
+<meta name="author" content="Arian komaei &amp; Alireza Faraj Tabrizi">
+<link rel="canonical" href="http://localhost:1313/posts/adversarial-rl/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.ae3d277e69647c027e65dd7c785748f912a9be2d37da0061b9ff15a5d7fafb7b.css" integrity="sha256-rj0nfmlkfAJ&#43;Zd18eFdI&#43;RKpvi032gBhuf8Vpdf6&#43;3s=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/adversarial-rl/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="🗃️ Archive">
+                    <span>🗃️ Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="🔍 Search">
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/us/" title="👤 Us">
+                    <span>👤 Us</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Adversarial RL
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="35" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+    </h1>
+    <div class="post-meta"><span title='2025-09-10 22:55:00 +0330 +0330'>September 10, 2025</span>&nbsp;·&nbsp;Arian komaei &amp; Alireza Faraj Tabrizi
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="adversarial-attacks-on-reinforcement-learning-policies">Adversarial Attacks on Reinforcement Learning Policies<a hidden class="anchor" aria-hidden="true" href="#adversarial-attacks-on-reinforcement-learning-policies">#</a></h1>
+<p>Reinforcement Learning (RL) has powered breakthroughs in games, robotics, and autonomous systems. But just like image classifiers can be fooled by carefully crafted adversarial examples, RL agents are also vulnerable to <strong>adversarial attacks</strong>. These attacks can manipulate the agent’s perception of the environment or its decision process, leading to unsafe or suboptimal behavior.</p>
+<h2 id="what-do-adversarial-attacks-mean-in-rl">What Do Adversarial Attacks Mean in RL?<a hidden class="anchor" aria-hidden="true" href="#what-do-adversarial-attacks-mean-in-rl">#</a></h2>
+<p>In RL, an agent interacts with an environment, observes a state, takes an action, and receives a reward. An adversarial attack interferes with this process—often by perturbing the input observations—so the agent chooses actions that look reasonable to it but are actually harmful.</p>
+<p>For example:</p>
+<ul>
+<li>A self-driving car policy might mistake a stop sign for a speed-limit sign if subtle noise is added to the camera input.</li>
+<li>A robot trained to walk could be tripped by slight modifications to its sensor readings.</li>
+</ul>
+<h2 id="types-of-attacks-in-reinforcement-learning">Types of Attacks in Reinforcement Learning<a hidden class="anchor" aria-hidden="true" href="#types-of-attacks-in-reinforcement-learning">#</a></h2>
+<p>Researchers have identified several ways adversarial attacks can target RL policies. These attack vectors include:</p>
+<ol>
+<li>
+<p><strong>Observation Perturbation</strong></p>
+<p>The most widely studied form of attack: small, carefully crafted changes are made to the agent’s observations so it perceives the environment incorrectly.</p>
+<p><em>Example:</em> Adding imperceptible noise to frames in an Atari game so the agent misjudges its next move.</p>
+</li>
+<li>
+<p><strong>Communication Perturbation</strong></p>
+<p>In multi-agent systems, communication messages can be perturbed, leading to miscoordination.</p>
+<p><em>Example:</em> Two drones sharing location data receive slightly altered coordinates, causing a collision.</p>
+</li>
+<li>
+<p><strong>Malicious Communications</strong></p>
+<p>Beyond perturbations, adversaries may inject entirely fake or deceptive messages.</p>
+<p><em>Example:</em> An attacker sends a false signal about enemy positions in a cooperative strategy game.</p>
+</li>
+</ol>
+<h2 id="why-it-matters">Why It Matters<a hidden class="anchor" aria-hidden="true" href="#why-it-matters">#</a></h2>
+<p>Adversarial attacks highlight the gap between high-performing RL policies in controlled benchmarks and their reliability in the real world. Understanding and mitigating these vulnerabilities is essential if we want RL to be trusted in safety-critical domains like autonomous driving, robotics, and healthcare.</p>
+<h1 id="how-vulnerable-are-rl-policies-to-adversarial-attacks">How Vulnerable Are RL Policies to Adversarial Attacks?<a hidden class="anchor" aria-hidden="true" href="#how-vulnerable-are-rl-policies-to-adversarial-attacks">#</a></h1>
+<p>Reinforcement Learning (RL) has made huge strides in recent years, powering systems that can beat human champions in games and control robots with precision. But just like image classifiers can be fooled by imperceptible changes to inputs, RL policies are also highly vulnerable to <strong>adversarial attacks</strong></p>
+<p><img alt="Adversarial Attacks" loading="lazy" src="/posts/adversarial-rl/1.PNG"></p>
+<p>The researchers show that even tiny perturbations—so small they are invisible to humans—can cause RL agents to fail dramatically at test time. Using Atari games as a testbed, they evaluate three common deep RL algorithms: <strong>DQN, TRPO, and A3C</strong>. The results are clear: all three are susceptible, but <strong>DQN policies are especially vulnerable</strong>.</p>
+<p><img alt="Adversarial Attacks" loading="lazy" src="/posts/adversarial-rl/2.PNG">
+<img alt="Adversarial Attacks" loading="lazy" src="/posts/adversarial-rl/3.PNG"></p>
+<h2 id="white-box-attacks-with-fgsm">White-Box Attacks with FGSM<a hidden class="anchor" aria-hidden="true" href="#white-box-attacks-with-fgsm">#</a></h2>
+<p>In white-box scenarios, where the adversary has full access to the policy and gradients, attacks are devastating. The team applies the <strong>Fast Gradient Sign Method (FGSM)</strong> to craft adversarial examples and finds:</p>
+<ul>
+<li>An <code>ℓ∞</code>-norm perturbation with ε = 0.001 can slash performance by <strong>over 50%</strong>.</li>
+<li><code>ℓ1</code>-norm attacks are even more powerful—by changing just a handful of pixels significantly, they can cripple the agent’s performance.</li>
+</ul>
+<p>Even policies trained with robust algorithms like TRPO and A3C experience sharp drops when faced with these attacks.</p>
+<h2 id="black-box-attacks-and-transferability">Black-Box Attacks and Transferability<a hidden class="anchor" aria-hidden="true" href="#black-box-attacks-and-transferability">#</a></h2>
+<p>What if the adversary doesn’t have full access to the policy network? Surprisingly, attacks are still effective. In <strong>black-box settings</strong>, adversaries exploit the property of <strong>transferability</strong>:</p>
+<ul>
+<li>Adversarial examples created for one policy often <strong>transfer</strong> to another policy trained on the same task.</li>
+<li>Transferability also extends <strong>across algorithms</strong>—for example, attacks generated against a DQN policy can still reduce the performance of an A3C policy.</li>
+<li>Effectiveness decreases with less knowledge, but performance still degrades significantly, especially with <code>ℓ1</code> attacks.</li>
+</ul>
+<h2 id="why-this-matters">Why This Matters<a hidden class="anchor" aria-hidden="true" href="#why-this-matters">#</a></h2>
+<p>The key takeaway is that <strong>adversarial examples are not just a computer vision problem</strong>. RL policies—despite achieving high scores in training—can be undermined by imperceptible perturbations. This fragility is dangerous for real-world applications like autonomous driving and robotics, where safety and reliability are non-negotiable.</p>
+<h2 id="universal-adversarial-preservation-uap">Universal Adversarial Preservation (UAP)<a hidden class="anchor" aria-hidden="true" href="#universal-adversarial-preservation-uap">#</a></h2>
+<p>To ground these ideas, I re-implemented the 2017 Adversarial Attacks on Neural Network Policies setup (since there was no offical impelmentation) and trained a DQN agent on Atari Pong. After validating the baseline attacks, I implemented Universal Adversarial Perturbations (UAPs) and found that a single, fixed perturbation—computed once and then applied it to all observations, which was enough to consistently derail the policy across episodes and random seeds, without recomputing noise at every timestep. In other words, the attack generalized over time and trajectories, confirming that UAPs exploit stable perceptual quirks of the learned policy rather than moment-by-moment gradients. Practically, this feels much closer to a real-world threat model: an attacker only needs to tamper with the sensor once (think a sticker/overlay on the lens) instead of having high-bandwidth, per-step access to the system. Below you can see the plot of rewards vs ε bugdet and videos of different setups.</p>
+<p><img alt="Task montage" loading="lazy" src="/posts/adversarial-rl/implementation_plot.png">
+<em>baselines&rsquo; reward over different values of ε budget.</em></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center"><img alt="Clean baseline" loading="lazy" src="/posts/adversarial-rl/clean-episode-0-ezgif.com-video-to-gif-converter.gif" title="Clean baseline"></th>
+          <th style="text-align: center"><img alt="Random uniform ε=2.0" loading="lazy" src="/posts/adversarial-rl/rand_uniform_eps_2.000-episode-0-ezgif.com-video-to-gif-converter.gif" title="Random uniform ε=2.0"></th>
+          <th style="text-align: center"><img alt="FGSM ε=2.0" loading="lazy" src="/posts/adversarial-rl/fgsm_eps_2.000-episode-0-ezgif.com-video-to-gif-converter.gif" title="FGSM ε=2.0"></th>
+          <th style="text-align: center"><img alt="PGD ε=2.0" loading="lazy" src="/posts/adversarial-rl/pgd_eps_2.000-episode-0-ezgif.com-video-to-gif-converter.gif" title="PGD ε=2.0"></th>
+          <th style="text-align: center"><img alt="UAP ε=2.0" loading="lazy" src="/posts/adversarial-rl/uap_eps_2.000-episode-0-ezgif.com-video-to-gif-converter.gif" title="UAP ε=2.0"></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><em>Clean — original episode (no perturbation).</em></td>
+          <td style="text-align: center"><em>Random uniform noise (ε = 2.0).</em></td>
+          <td style="text-align: center"><em>FGSM (ε = 2.0) — white-box attack.</em></td>
+          <td style="text-align: center"><em>PGD (ε = 2.0) — iterative, white-box attack.</em></td>
+          <td style="text-align: center"><em>UAP (ε = 2.0) — image-agnostic.</em></td>
+      </tr>
+  </tbody>
+</table>
+<h1 id="adversarial-policies-when-weird-opponents-break-strong-rl">Adversarial Policies: when weird opponents break strong RL<a hidden class="anchor" aria-hidden="true" href="#adversarial-policies-when-weird-opponents-break-strong-rl">#</a></h1>
+<blockquote>
+<p><strong>TL;DR.</strong> Instead of adding pixel noise to an RL agent’s input, this paper shows you can train a <em>policy</em> that acts in the shared world to <em>induce natural but adversarial observations</em> for the victim—causing robust, self-play–trained agents to fail in zero-sum MuJoCo games. Fine-tuning helps…until a new adversary is learned.</p></blockquote>
+<hr>
+<h2 id="the-threat-model-natural-observations-as-the-perturbation">The threat model: natural observations as the “perturbation”<a hidden class="anchor" aria-hidden="true" href="#the-threat-model-natural-observations-as-the-perturbation">#</a></h2>
+<p>In multi-agent settings, an attacker typically can’t flip pixels or edit state vectors. But it <strong>can</strong> choose actions that make the victim <em>see</em> carefully crafted, physically plausible observations. Hold the victim fixed and the two-player game becomes a single-agent MDP for the attacker, who learns a policy that <em>elicits</em> bad actions from the victim.</p>
+<p><strong>Quick look:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center"><img alt="YSNP: normal opponent vs victim" loading="lazy" src="/posts/adversarial-rl/you_shall_not_pass.gif" title="You Shall Not Pass"></th>
+          <th style="text-align: center"><img alt="Kick &amp; Defend" loading="lazy" src="/posts/adversarial-rl/kick%20and%20defend.gif" title="Kick &amp; Defend"></th>
+          <th style="text-align: center"><img alt="Sumo (Human)" loading="lazy" src="/posts/adversarial-rl/sumo%20human.gif" title="Sumo (Human)"></th>
+          <th style="text-align: center"><img alt="Masked victim vs adversary" loading="lazy" src="/posts/adversarial-rl/masked%20you%20shall%20not%20pass.gif" title="Masked victim vs adversary"></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><em>You Shall Not Pass</em></td>
+          <td style="text-align: center"><em>Kick &amp; Defend</em></td>
+          <td style="text-align: center"><em>Sumo (Human)</em></td>
+          <td style="text-align: center"><em>Masked victim vs adversary</em></td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="setup-in-a-nutshell">Setup in a nutshell<a hidden class="anchor" aria-hidden="true" href="#setup-in-a-nutshell">#</a></h2>
+<ul>
+<li><strong>Victims:</strong> strong self-play policies (“agent zoo”) across four MuJoCo tasks: <strong>Kick &amp; Defend</strong>, <strong>You Shall Not Pass</strong>, <strong>Sumo Humans</strong>, <strong>Sumo Ants</strong>.</li>
+<li><strong>Attacker:</strong> trained with <strong>PPO</strong> for ~<strong>20M</strong> timesteps—<em>&lt; 3%</em> of the 680–1360M timesteps used for the victims—yet reliably wins.</li>
+<li><strong>Key idea:</strong> adversaries don’t become great players; they learn poses/motions that generate <strong>adversarial observations</strong> for the victim.</li>
+</ul>
+<p><strong>Figures</strong></p>
+<p><img alt="Task montage" loading="lazy" src="/posts/adversarial-rl/envs.PNG">
+<em>Tasks used for evaluation.</em></p>
+<p><img alt="Adversary training wins" loading="lazy" src="/posts/adversarial-rl/training_plot.PNG">
+<em>Adversary win rate rises quickly despite far fewer timesteps.</em></p>
+<hr>
+<h2 id="what-the-learned-adversary-looks-like-and-why-that-matters">What the learned adversary <em>looks</em> like (and why that matters)<a hidden class="anchor" aria-hidden="true" href="#what-the-learned-adversary-looks-like-and-why-that-matters">#</a></h2>
+<p>In <strong>Kick &amp; Defend</strong> and <strong>YSNP</strong>, the adversary may <strong>never stand up</strong>—it finds contorted, stable poses that make the victim mis-act. In <strong>Sumo Humans</strong>, where falling loses immediately, it adopts a <strong>kneeling/stable</strong> stance that still provokes the victim to fall.</p>
+<p><img alt="Adversary postures" loading="lazy" src="/posts/adversarial-rl/you_shall_not_pass.gif"></p>
+<p><em>Qualitative behaviors: the “point” is to confuse, not to excel at the nominal task.</em></p>
+<hr>
+<h2 id="masking-test-evidence-the-attack-is-observational">Masking test: evidence the attack is observational<a hidden class="anchor" aria-hidden="true" href="#masking-test-evidence-the-attack-is-observational">#</a></h2>
+<p>If wins come from <strong>manipulating what the victim sees</strong>, then hiding the adversary’s pose from the victim should help. That’s exactly what happens:</p>
+<ul>
+<li>Against normal opponents, the <strong>masked victim</strong> is (unsurprisingly) <em>worse</em>.</li>
+<li>Against the <strong>adversary</strong>, the masked victim becomes <strong>nearly immune</strong> (e.g., in YSNP: normal victim loses often; masked victim flips the outcome and wins almost always).</li>
+</ul>
+<p><img alt="Masked vs normal results" loading="lazy" src="/posts/adversarial-rl/result_ysnp.PNG">
+<em>Masking the adversary’s position removes the observation channel the attack exploits.</em></p>
+<hr>
+<h2 id="dimensionality-matters">Dimensionality matters<a hidden class="anchor" aria-hidden="true" href="#dimensionality-matters">#</a></h2>
+<p>Victims are <strong>more vulnerable when more opponent DOFs are observed</strong>. The attack is stronger in <strong>Humanoid</strong> (higher-dimensional observed joints) than <strong>Ant</strong> (lower-dimensional). More controllable joints → more ways to steer the victim <strong>off-distribution</strong>.</p>
+<p><img alt="Dimensionality sensitivity" loading="lazy" src="/posts/adversarial-rl/result_dim.PNG">
+<em>Higher observed dimensionality correlates with higher adversary win rates.</em></p>
+<hr>
+<h2 id="why-it-works-off-distribution-activations">Why it works: off-distribution activations<a hidden class="anchor" aria-hidden="true" href="#why-it-works-off-distribution-activations">#</a></h2>
+<p>Analyses of the victim’s network show adversarial opponents push internal activations <strong>farther from the training manifold</strong> than random or lifeless baselines.</p>
+<p><img alt="GMM likelihoods" loading="lazy" src="/posts/adversarial-rl/gmm_tsne.PNG">
+<em>Adversarial policies drive “weird” activations—more off-distribution than simple OOD baselines.</em></p>
+<hr>
+<h2 id="defenses-and-their-limits">Defenses (and their limits)<a hidden class="anchor" aria-hidden="true" href="#defenses-and-their-limits">#</a></h2>
+<p><strong>Fine-tuning</strong> the victim on the discovered adversary reduces that adversary’s success (often down to ~10% in YSNP), but:</p>
+<ul>
+<li><strong>Catastrophic forgetting:</strong> performance vs normal opponents degrades (single-adversary fine-tune is worst; dual fine-tune helps but still regresses).</li>
+<li><strong>Arms race:</strong> re-running the attack against the fine-tuned victim yields a <em>new</em> adversary that succeeds again—often via a different failure mode (e.g., tripping rather than pure confusion).</li>
+</ul>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center"><img alt="Before fine-tune: adversary succeeds" loading="lazy" src="/posts/adversarial-rl/you_shall_not_pass.gif" title="Before fine-tune: adversary succeeds"></th>
+          <th style="text-align: center"><img alt="After fine-tune: robust to this adversary" loading="lazy" src="/posts/adversarial-rl/adversarial_trained_new_adversarial.gif" title="After fine-tune: robust to this adversary"></th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><em>Before fine-tune</em></td>
+          <td style="text-align: center"><em>After fine-tune (this adversary)</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><img alt="Defense matrix" loading="lazy" src="/posts/adversarial-rl/result_ysnp.PNG">
+<em>Win-rate grid before/after fine-tuning against normal opponents and adversaries.</em></p>
+<hr>
+<h2 id="takeaways-for-practitioners">Takeaways for practitioners<a hidden class="anchor" aria-hidden="true" href="#takeaways-for-practitioners">#</a></h2>
+<ul>
+<li><strong>Threat model upgrade:</strong> in multi-agent worlds, your attack surface includes other policies that craft <strong>natural observations</strong>—no pixel hacks needed.</li>
+<li><strong>Exploitability check:</strong> training a targeted adversary <strong>lower-bounds</strong> your policy’s worst-case performance and reveals failure modes missed by self-play.</li>
+<li><strong>Defense needs diversity:</strong> fine-tuning on a single adversary overfits. Prefer <strong>population-based</strong> or curriculum defenses that rotate diverse opponents and maintain competence vs normals.</li>
+</ul>
+<h1 id="robust-communicative-multi-agent-reinforcement-learning-with-active-defense">Robust Communicative Multi-Agent Reinforcement Learning with Active Defense<a hidden class="anchor" aria-hidden="true" href="#robust-communicative-multi-agent-reinforcement-learning-with-active-defense">#</a></h1>
+<p><strong>By Yu et al., AAAI 2024</strong></p>
+<h3 id="-why-communication-matters-in-multi-agent-rl">🌐 Why Communication Matters in Multi-Agent RL<a hidden class="anchor" aria-hidden="true" href="#-why-communication-matters-in-multi-agent-rl">#</a></h3>
+<p>In multi-agent reinforcement learning (MARL), agents often face <strong>partial observability</strong> — no single agent sees the full environment. To cooperate effectively, agents need to <strong>communicate</strong>, sharing information about what they see and what actions to take.</p>
+<p>This communication has powered applications such as <strong>robot navigation</strong> and <strong>traffic light control</strong>.</p>
+<p>But there’s a catch: in the real world, communication channels are <strong>noisy</strong> and <strong>vulnerable to adversarial attacks</strong>. If attackers tamper with even a few messages, the performance of MARL systems can collapse.</p>
+<hr>
+<h3 id="-enter-active-defense-the-core-idea">🛡️ Enter Active Defense: The Core Idea<a hidden class="anchor" aria-hidden="true" href="#-enter-active-defense-the-core-idea">#</a></h3>
+<p>Yu et al. propose a <strong>new active defense strategy</strong>. Instead of blindly trusting all messages, agents:</p>
+<ol>
+<li><strong>Judge the reliability</strong> of each incoming message using their own observations and history (hidden states).</li>
+<li><strong>Adjust the influence</strong> of unreliable messages by reducing their weight in the decision process.</li>
+</ol>
+<p>👉 Example: If one agent already searched location (1,1) and found nothing, but receives a message saying “Target at (1,1)”, it can spot the inconsistency and downweight that message.</p>
+<hr>
+<h3 id="-the-admac-framework">🧩 The ADMAC Framework<a hidden class="anchor" aria-hidden="true" href="#-the-admac-framework">#</a></h3>
+<p>The authors introduce <strong>Active Defense Multi-Agent Communication (ADMAC)</strong>, which has two key components:</p>
+<ul>
+<li><strong>Reliability Estimator</strong>: A classifier that predicts whether a message is reliable (weight close to 1) or unreliable (weight close to 0).</li>
+<li><strong>Decomposable Message Aggregation Policy Net</strong>: A structure that breaks down the influence of each message into an <strong>action preference vector</strong>, making it possible to scale its impact up or down.</li>
+</ul>
+<p>This allows agents to <strong>combine their own knowledge with weighted messages</strong> to make more robust decisions.</p>
+<p><img alt="ADMAC Framework" loading="lazy" src="/posts/adversarial-rl/first.png"></p>
+<p>The figure above shows how an agent in the <strong>ADMAC framework</strong> generates its action distribution by combining its own observations with incoming messages from other agents:</p>
+<ol>
+<li><strong>Hidden state update</strong>: The agent maintains a hidden state (<code>hᵢᵗ⁻¹</code>), which is updated using the observation (<code>oᵢᵗ</code>) through the GRU module <code>f_HP</code>. This captures past and current information.</li>
+<li><strong>Base action preference</strong>: From the updated hidden state, the agent generates a <strong>base preference vector</strong> via <code>f_BP</code>, representing what it would do independently.</li>
+<li><strong>Message influence</strong>: Each received message (<code>m₁ᵗ, …, m_Nᵗ</code>) is processed with the observation through <code>f_MP</code>, producing a <strong>message-based action preference vector</strong>.</li>
+<li><strong>Reliability estimation</strong>: A reliability estimator <code>f_R</code> evaluates each message, assigning it a weight <code>wᵢ(mⱼᵗ)</code> that reflects how trustworthy it seems.</li>
+<li><strong>Aggregation</strong>: The agent sums its base vector with all weighted message vectors to form a <strong>total action preference vector (<code>vᵢᵗ</code>)</strong>.</li>
+<li><strong>Final decision</strong>: Applying a Softmax function converts this vector into a probability distribution over actions, from which the agent selects its next move.</li>
+</ol>
+<p>By <strong>downweighting unreliable messages</strong>, ADMAC enables agents to remain robust against malicious communication while still leveraging useful information from peers.</p>
+<hr>
+<p>References:</p>
+<ol>
+<li>Huang, S. H., Papernot, N., Goodfellow, I. J., Duan, Y., &amp; Abbeel, P. (2017). Adversarial Attacks on Neural Network Policies.</li>
+<li>Gleave, A., Dennis, M., Kant, N., Wild, C., Levine, S., &amp; Russell, S. (2019).</li>
+<li>Adversarial Policies: Attacking Deep Reinforcement Learning.
+Yu, L., Qiu, Y., Yao, Q., Shen, Y., Zhang, X., &amp; Wang, J. (2023).</li>
+<li>Robust Communicative Multi-Agent Reinforcement Learning with Active Defense.
+Guo, W., Wu, X., Huang, S., &amp; Xing, X. (2021). Adversarial Policy Learning in Two-player Competitive Games.</li>
+<li><a href="https://www.youtube.com/watch?v=-_j-fmVpn_s">https://www.youtube.com/watch?v=-_j-fmVpn_s</a></li>
+<li><a href="https://rll.berkeley.edu/adversarial/">https://rll.berkeley.edu/adversarial/</a></li>
+</ol>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "rljclub-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
