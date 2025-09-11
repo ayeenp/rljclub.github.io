@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Model-Based RL on 🧠 RL Journal Club</title>
+    <link>http://localhost:1313/tags/model-based-rl/</link>
+    <description>Recent content in Model-Based RL on 🧠 RL Journal Club</description>
+    <generator>Hugo -- 0.150.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 11 Sep 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/model-based-rl/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Reinforcement Learning for Massive Multi-Agent Systems</title>
+      <link>http://localhost:1313/posts/rl-for-massive-multiagent-systems/</link>
+      <pubDate>Thu, 11 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/rl-for-massive-multiagent-systems/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;In many real-world systems, we do not just have one agent learning to act, but hundreds or even thousands. Think of traffic lights in a city, drones in a swarm, energy grid nodes, or even massive team-based video games like Google Football or SMACv2. All of these require agents to coordinate in a scalable way.&lt;/p&gt;
+&lt;figure&gt;
+    &lt;img loading=&#34;lazy&#34; src=&#34;./SMACv2.png&#34;
+         alt=&#34;SMACv2 image&#34;/&gt; &lt;figcaption&gt;
+            &lt;p&gt;Screenshots from SMACv2 showing agents battling the built-in AI.&lt;/p&gt;
+        &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;The difficulty comes from the explosion of interactions as the number of agents grows. Communication bandwidth is limited, agents often have only partial information, and centralized methods become computationally intractable. That is why there is a push for new reinforcement learning methods that scale gracefully to thousands of agents—balancing efficiency, decentralization, and coordination. This article explores some approaches for addressing these scalability challenges in massive multi-agent systems (MMAS).&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

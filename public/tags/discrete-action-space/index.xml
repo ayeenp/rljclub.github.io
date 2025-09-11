@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Discrete Action Space on 🧠 RL Journal Club</title>
+    <link>http://localhost:1313/tags/discrete-action-space/</link>
+    <description>Recent content in Discrete Action Space on 🧠 RL Journal Club</description>
+    <generator>Hugo -- 0.150.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 17 Aug 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/discrete-action-space/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Actor-Critic vs. Value-Based: Empirical Trade-offs</title>
+      <link>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</guid>
+      <description>An empirical comparison of Value-Based and Actor-Critic reinforcement learning algorithms across discrete and continuous action spaces, analyzing trade-offs in convergence speed, stability, and performance.</description>
+    </item>
+  </channel>
+</rss>
