@@ -153,6 +153,12 @@ A unique strength of RL-MLZerD is its ability to **predict the order in which pr
 
 ---
 
+## Real World Application
+
+Targeted drug development can be revolutionized by understanding how protein complexes form. By pinpointing the exact assembly pathway, we can design drugs that disrupt the complex at a precise stage. While experimental methods are costly, the RL-MLZerD algorithm can predict these pathways with high accuracy, providing fast, affordable insights that empower researchers to develop next-generation therapeutics.
+
+---
+
 ## Conclusion
 
 RL-MLZerD highlights the potential of reinforcement learning beyond games and robotics bringing it into **structural biology**. By efficiently navigating the combinatorial docking space, it opens new avenues for understanding protein complexes and their functional mechanisms.
