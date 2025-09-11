@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Comm_MARL on 🧠 RL Journal Club</title>
+    <link>http://localhost:1313/tags/comm_marl/</link>
+    <description>Recent content in Comm_MARL on 🧠 RL Journal Club</description>
+    <generator>Hugo -- 0.149.1</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/comm_marl/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Emergent Communication in Multi-Agent RL</title>
+      <link>http://localhost:1313/posts/emergent-communication-in-multi-agent-reinforcement-learning/</link>
+      <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/emergent-communication-in-multi-agent-reinforcement-learning/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;Beyond Silence: The Rise of Communication in Multi-Agent Reinforcement Learning
+Imagine a team of robots on a mission: some are searching for an object, others are navigating a complex maze. They can&amp;rsquo;t see what their teammates see, and they can&amp;rsquo;t shout instructions across the field. This is the challenge of multi-agent reinforcement learning (MARL), where coordination is key but communication is often an afterthought.&lt;/p&gt;
+&lt;p&gt;Traditional MARL often faces a major hurdle: partial observability. Each agent only sees a small part of the environment, making it difficult to make globally optimal decisions. Another problem is non-stationarity, where the environment is constantly changing due to the actions of other agents. But what if we could teach these agents to talk to each other? That’s where the fascinating field of multi-agent deep reinforcement learning with communication (Comm-MADRL) comes in.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

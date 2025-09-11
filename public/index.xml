@@ -4,10 +4,27 @@
     <title>🧠 RL Journal Club</title>
     <link>http://localhost:1313/</link>
     <description>Recent content on 🧠 RL Journal Club</description>
-    <generator>Hugo -- 0.129.0</generator>
+    <generator>Hugo -- 0.149.1</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Sep 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Emergent Communication in Multi-Agent RL</title>
+      <link>http://localhost:1313/posts/emergent-communication-in-multi-agent-reinforcement-learning/</link>
+      <pubDate>Sat, 06 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/emergent-communication-in-multi-agent-reinforcement-learning/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;Introduction&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Imagine there is a team of robots on a mission. Some are searching for an object, others are navigating a complex maze. They can&amp;rsquo;t see what their teammates see, and they can&amp;rsquo;t shout instructions across the field. This is the challenge of multi-agent reinforcement learning (MARL), where coordination is key but communication is often an afterthought.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Traditional MARL often faces a major hurdle: &lt;strong&gt;&lt;em&gt;partial observability&lt;/em&gt;&lt;/strong&gt;. Each agent only sees a small part of the environment, making it difficult to make globally optimal decisions. Another problem is &lt;strong&gt;&lt;em&gt;non-stationarity&lt;/em&gt;&lt;/strong&gt;, where the environment is constantly changing due to the actions of other agents. But what if we could teach these agents to talk to each other? That’s where the fascinating field of multi-agent deep reinforcement learning with communication &lt;strong&gt;(Comm-MADRL)&lt;/strong&gt; comes in.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Actor-Critic vs. Value-Based: Empirical Trade-offs</title>
+      <link>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</guid>
+      <description>An empirical comparison of Value-Based and Actor-Critic reinforcement learning algorithms across discrete and continuous action spaces, analyzing trade-offs in convergence speed, stability, and performance.</description>
+    </item>
     <item>
       <title>Three Dogmas of Reinforcement Learning</title>
       <link>http://localhost:1313/posts/three-dogmas-of-reinforcement-learning/</link>
@@ -27,8 +44,23 @@
       <link>http://localhost:1313/us/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/us/</guid>
-      <description>Welcome to our blog! We are a team of enthusiastic professors and students from Sharif University of Technology who are eager to share our insights and passion for this fascinating field. Our aim is to share our knowledge and excitement about this cutting-edge field with you ❤️.
-Professors Professor Mohammad Hossein Rohban Professor Ehsaneddin Asgari Students Arash Alikhani Alireza Nobakht Labs RIML Lab NLP &amp;amp; DH Lab We hope you enjoy our blog and find our content both informative and inspiring 🚀!</description>
+      <description>&lt;p&gt;Welcome to our blog! We are a team of enthusiastic professors and students from Sharif University of Technology who are eager to share our insights and passion for this fascinating field. Our aim is to share our knowledge and excitement about this cutting-edge field with you ❤️.&lt;/p&gt;
+&lt;h2 id=&#34;professors&#34;&gt;Professors&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Professor &lt;a href=&#34;https://www.linkedin.com/in/mohammad-hossein-rohban-75567677&#34;&gt;Mohammad Hossein Rohban&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Professor &lt;a href=&#34;https://www.linkedin.com/in/ehsaneddinasgari&#34;&gt;Ehsaneddin Asgari&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;students&#34;&gt;Students&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.linkedin.com/in/infinity2357&#34;&gt;Arash Alikhani&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.linkedin.com/in/alireza-nobakht&#34;&gt;Alireza Nobakht&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;labs&#34;&gt;Labs&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/rohban-lab&#34;&gt;RIML Lab&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/language-ml&#34;&gt;NLP &amp;amp; DH Lab&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;We hope you enjoy our blog and find our content both informative and inspiring 🚀!&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

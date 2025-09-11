@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Emergent Communication in Multi-Agent RL | 🧠 RL Journal Club</title>
+<meta name="keywords" content="multi-agent, communication, emergent language, Comm_MARL">
+<meta name="description" content="Introduction
+
+Imagine there is a team of robots on a mission. Some are searching for an object, others are navigating a complex maze. They can&rsquo;t see what their teammates see, and they can&rsquo;t shout instructions across the field. This is the challenge of multi-agent reinforcement learning (MARL), where coordination is key but communication is often an afterthought.
+Traditional MARL often faces a major hurdle: partial observability. Each agent only sees a small part of the environment, making it difficult to make globally optimal decisions. Another problem is non-stationarity, where the environment is constantly changing due to the actions of other agents. But what if we could teach these agents to talk to each other? That’s where the fascinating field of multi-agent deep reinforcement learning with communication (Comm-MADRL) comes in.">
+<meta name="author" content="Mahshid Dehghani, Homa GhaffarZadeh">
+<link rel="canonical" href="http://localhost:1313/posts/emergent-communication-in-multi-agent-reinforcement-learning/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css" integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY&#43;IJWZFnspCg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/emergent-communication-in-multi-agent-reinforcement-learning/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="🗃️ Archive">
+                    <span>🗃️ Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="🔍 Search">
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/us/" title="👤 Us">
+                    <span>👤 Us</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Emergent Communication in Multi-Agent RL
+    </h1>
+    <div class="post-meta"><span title='2025-09-06 00:00:00 +0000 UTC'>September 6, 2025</span>&nbsp;·&nbsp;Mahshid Dehghani, Homa GhaffarZadeh
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#the-nine-dimensions-of-communication" aria-label="The Nine Dimensions of Communication">The Nine Dimensions of Communication</a></li>
+                <li>
+                    <a href="#teaching-agents-to-talk-the-two-core-approaches" aria-label="Teaching Agents to Talk: The Two Core Approaches">Teaching Agents to Talk: The Two Core Approaches</a></li>
+                <li>
+                    <a href="#emergent-language" aria-label="Emergent Language">Emergent Language</a></li>
+                <li>
+                    <a href="#whats-next" aria-label="What&rsquo;s Next?">What&rsquo;s Next?</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<blockquote>
+<p>Imagine there is a team of robots on a mission. Some are searching for an object, others are navigating a complex maze. They can&rsquo;t see what their teammates see, and they can&rsquo;t shout instructions across the field. This is the challenge of multi-agent reinforcement learning (MARL), where coordination is key but communication is often an afterthought.</p></blockquote>
+<p>Traditional MARL often faces a major hurdle: <strong><em>partial observability</em></strong>. Each agent only sees a small part of the environment, making it difficult to make globally optimal decisions. Another problem is <strong><em>non-stationarity</em></strong>, where the environment is constantly changing due to the actions of other agents. But what if we could teach these agents to talk to each other? That’s where the fascinating field of multi-agent deep reinforcement learning with communication <strong>(Comm-MADRL)</strong> comes in.</p>
+<p>This field isn&rsquo;t just about sharing raw data; it&rsquo;s about learning a language from scratch. Instead of simply processing text like a large language model, these agents develop a deeper understanding of the world by experiencing the benefits of communication through goal-oriented tasks.</p>
+<h2 id="the-nine-dimensions-of-communication">The Nine Dimensions of Communication<a hidden class="anchor" aria-hidden="true" href="#the-nine-dimensions-of-communication">#</a></h2>
+<p>As the field of Comm-MADRL grows, it’s essential to have a framework for understanding and classifying the different approaches. The paper <em>&ldquo;A survey of multi-agent deep reinforcement learning with communication&rdquo;</em> proposes a new, systematic way to do this using nine dimensions. This framework helps researchers analyze, develop, and compare different systems.</p>
+<p>The following table shows the key dimensions to consider:</p>
+<p><img loading="lazy" src="Dim2.png#center" alt="Linguistic Elements"  />
+</p>
+<h2 id="teaching-agents-to-talk-the-two-core-approaches">Teaching Agents to Talk: The Two Core Approaches<a hidden class="anchor" aria-hidden="true" href="#teaching-agents-to-talk-the-two-core-approaches">#</a></h2>
+<p>One of the foundational steps in this research was figuring out how to let agents learn to communicate from the ground up. The paper <em>&ldquo;Learning to Communicate with Deep Multi-Agent Reinforcement Learning&rdquo;</em> introduced two innovative methods to do just that.</p>
+<p><strong>Reinforced Inter-Agent Learning (RIAL):</strong> This approach uses a single deep Q-learning model, shared by all agents, to make decisions. The agents&rsquo; actions include sending messages, which are treated just like any other action in the environment. This is a more traditional, decentralized approach to learning.
+<img loading="lazy" src="RIAL.PNG#center" alt="RIAL - RL based communication"  />
+</p>
+<p><strong>Differentiable Inter-Agent Learning (DIAL):</strong> This is where things get really interesting. DIAL allows for a more direct, end-to-end learning process. During training, error derivatives—the signals that tell a neural network how to adjust—can be backpropagated through the communication channel itself. Think of it like agents whispering advice to each other, and the network can immediately figure out if the advice was helpful or not. The training is centralized, but the learned policies can be executed in a decentralized way.
+<img loading="lazy" src="DIAL.PNG#center" alt="DIAL - Differentiable communication"  />
+</p>
+<h2 id="emergent-language">Emergent Language<a hidden class="anchor" aria-hidden="true" href="#emergent-language">#</a></h2>
+<p>Sometimes, the goal isn’t just to solve a task, but to see if agents can develop something that looks and feels like human language. This is the field of emergent language (EL), which a third paper, <em>&ldquo;Emergent Language: A Survey and Taxonomy,&rdquo;</em> explores in detail. EL research is distinct from traditional natural language processing (NLP) because it focuses on how agents develop and learn their own language through a process of grounded, goal-oriented interaction.</p>
+<p>The research breaks down communication into a &ldquo;semiotic cycle&rdquo; between a speaker and a listener. The speaker takes a goal and their world model, conceptualizes a message, produces an utterance, and sends it to the listener. The listener then comprehends the utterance, interprets it, and takes an action in their environment. This continuous cycle of meaning-making and action is crucial to understanding how language emerges.
+<img loading="lazy" src="SL.png#center" alt="Linguistic Elements"  />
+</p>
+<p><strong>EL Metrics</strong> check if EL shows language-like qualities. Grounding measures alignment with the environment, compositionality tracks how structure maps to meaning, consistency ensures reliable use of words, generalization tests adaptability to new tasks, and pragmatics captures efficiency, predictability, and cooperation in communication.
+<img loading="lazy" src="el_metrics.png#center" alt="Linguistic Elements"  />
+</p>
+<h2 id="whats-next">What&rsquo;s Next?<a hidden class="anchor" aria-hidden="true" href="#whats-next">#</a></h2>
+<p>The research papers suggest several exciting future directions:</p>
+<ul>
+<li>
+<p><strong>Non-Cooperative Settings:</strong> Most research has focused on cooperative agents, but what happens when agents have mixed or even competitive goals? How would communication evolve then?</p>
+</li>
+<li>
+<p><strong>Heterogeneous Agents:</strong> Current work often assumes all agents are the same. Future research could explore communication between agents with different capabilities and goals.</p>
+</li>
+<li>
+<p><strong>Beyond Text:</strong> Can agents communicate using non-textual data like voice or gestures?</p>
+</li>
+</ul>
+<p>In the end, teaching agents to talk isn&rsquo;t just a technical challenge; it&rsquo;s a step towards creating more flexible and useful AI systems that can work seamlessly with each other—and perhaps one day, with us.</p>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<p>[1] <a href="https://arxiv.org/abs/2407.10583">Zhu, Changxi, Mehdi Dastani, and Shihan Wang. A Survey of Multi-Agent Deep Reinforcement Learning with Communication. 2024. arXiv, https://arxiv.org/abs/2203.08975.</a></p>
+<p>[2] <a href="https://arxiv.org/abs/2212.10420">Foerster, Jakob N., Yannis M. Assael, Nando de Freitas, and Shimon Whiteson. Learning to Communicate with Deep Multi-Agent Reinforcement Learning. 2016. arXiv, https://arxiv.org/abs/1605.06676.</a></p>
+<p>[3] <a href="https://arxiv.org/abs/2407.10583">Peters, Jannik, et al. “Emergent Language: A Survey and Taxonomy.” Autonomous Agents and Multi-Agent Systems, vol. 39, no. 1, Springer, 2025, https://doi.org/10.1007/s10458-025-09691-y.</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/multi-agent/">Multi-Agent</a></li>
+      <li><a href="http://localhost:1313/tags/communication/">Communication</a></li>
+      <li><a href="http://localhost:1313/tags/emergent-language/">Emergent Language</a></li>
+      <li><a href="http://localhost:1313/tags/comm_marl/">Comm_MARL</a></li>
+    </ul>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "rljclub-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
