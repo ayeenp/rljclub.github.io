@@ -4,10 +4,24 @@
     <title>Posts on 🧠 RL Journal Club</title>
     <link>http://localhost:1313/posts/</link>
     <description>Recent content in Posts on 🧠 RL Journal Club</description>
-    <generator>Hugo -- 0.129.0</generator>
+    <generator>Hugo -- 0.150.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 11 Sep 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Learning When to Plan and When to Use Tools: WebGPT vs ReTool</title>
+      <link>http://localhost:1313/posts/amfakhimi-webgpt-retool/</link>
+      <pubDate>Thu, 11 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/amfakhimi-webgpt-retool/</guid>
+      <description>A comparative study of two RL approaches that teach language models when and how to use tools. WebGPT uses browsing with a preference reward model. ReTool uses interleaved code execution with outcome rewards.</description>
+    </item>
+    <item>
+      <title>Actor-Critic vs. Value-Based: Empirical Trade-offs</title>
+      <link>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/</guid>
+      <description>An empirical comparison of Value-Based and Actor-Critic reinforcement learning algorithms across discrete and continuous action spaces, analyzing trade-offs in convergence speed, stability, and performance.</description>
+    </item>
     <item>
       <title>Three Dogmas of Reinforcement Learning</title>
       <link>http://localhost:1313/posts/three-dogmas-of-reinforcement-learning/</link>
