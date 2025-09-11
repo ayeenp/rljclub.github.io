@@ -1,6 +1,6 @@
 ---
 author: Hossein Nikdel
-title: RL for
+title: RL for Music
 date: 2025-09-11
 description: Deep dive into applications of RL in music generation
 tags:
@@ -9,7 +9,7 @@ tags:
   - Music
   - RewardModel
 cover:
-  image: figs/main.png
+  image: figs/main.jpg
   caption: Rl_music
   hiddenInSingle: true
 ShowToc: true
@@ -29,8 +29,7 @@ Machine learning models have made strong progress in generating music, but they 
 1. Learning from demonstrations (imitation learning) to get a sense of musical style and structure.  
 2. Using music theory constraints via reinforcement learning (RL) to impose rules.  
 3. Aligning outputs with human preferences via RLHF (reinforcement learning from human feedback).
-![1](figs/1.png)
-
+![1](figs/1.jpg)
 ---
 
 ## 2. Imitation Learning & Early Challenges  
@@ -38,7 +37,7 @@ Machine learning models have made strong progress in generating music, but they 
 - **Problem**: Pure generative models often lack long-term musical structure. They don’t improve based on audience feedback, and defining a reward function for music is hard.  
 
 - **Solution**: Use imitation learning (for example, GAIL) to learn a reward function from demonstrations.  
-![2](figs/2.png)
+![2](figs/2.jpg)
 - **Setup**:  
   - A dataset of **10 melodies** and **5 rhythmic accompaniments**.  
   - States defined in several ways:  
@@ -46,17 +45,18 @@ Machine learning models have made strong progress in generating music, but they 
     2. A 128-dimensional vector counting how many times each pitch has been played so far.  
     3. Similar, but giving lower weight to notes played a long time ago.  
   - Actions correspond to 89 possible piano notes + a “silent” action.  
-![3](figs/3.png)
+![3](figs/3.jpg)
 - **Outcome**: The model begins to make sounds that feel musical, but still quite far from satisfying human standards.
 
-![4](figs/4.png)
+![4](figs/4.jpg)
+
 ---
 
 ## 3. Reinforcement Learning + Music Theory (Google, 2016)  
 
 - In 2016, **Google’s Magenta team** introduced a method to combine generative models (Note-RNN) with reinforcement learning. The RL algorithm used was **DQN (Deep Q-Network)**. 
 
-![4](figs/5.png)
+![4](figs/5.jpg)
 - **Reward**: Two parts  
   1. A term preserving what the model learned from data (probability from the Note RNN).
   2. A *music theory reward* enforcing constraints, such as: staying in one key, beginning and ending on tonic, avoiding excessive repetition, avoiding very large leaps, having distinct highest and lowest notes, encouraging motifs and their repetition, etc.
@@ -68,18 +68,18 @@ Machine learning models have made strong progress in generating music, but they 
 ## 4. Reinforcement Learning from Human Feedback (RLHF) & Music Language Models (Google, 2024)  
 
 - More recently, Google (2024) introduced **MusicRL**, built by fine-tuning a pretrained music language model called MusicLM with human feedback. 
-![6](figs/6.png)
+![6](figs/6.jpg)
 - **How it works**:  
   - MusicLM is trained on pairs of captions (text prompts) and melodies. This lets it generate music in response to prompts. 
   - To handle the fact that users may dislike what it generates, they build a *reward model*. The reward model takes a prompt + a generated piece and outputs a scalar showing how much users prefer that output. 
   - Training the reward model involves showing humans two generated versions for the same prompt; asking which one they prefer; repeating this many times to build a dataset of pairwise preferences. 
-![7](figs/7.png)
+![7](figs/7.jpg)
 - **Algorithm**: They used **PPO (Proximal Policy Optimization)** to fine-tune the MusicLM model using the reward model. 
 
 - **Results**:  
   - Models fine-tuned with RLHF (MusicRL-R, MusicRL-U, MusicRL-RU) perform significantly better than the baseline MusicLM according to human raters. :contentReference
   - The combination of text adherence, audio quality, and user preference signals leads to the best overall performance. 
-![8](figs/8.png)
+![8](figs/8.jpg)
 
 
 

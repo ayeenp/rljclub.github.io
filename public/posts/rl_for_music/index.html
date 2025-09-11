@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>RL for Music | 🧠 RL Journal Club</title>
+<meta name="keywords" content="RLHF, GAIL, Music, RewardModel">
+<meta name="description" content="Deep dive into applications of RL in music generation">
+<meta name="author" content="Hossein Nikdel">
+<link rel="canonical" href="http://localhost:1313/posts/rl_for_music/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2211ca3164be7830024f6aad2b3a2e520843a64f8f048445c3401c1249aa051d.css" integrity="sha256-IhHKMWS&#43;eDACT2qtKzouUghDpk&#43;PBIRFw0AcEkmqBR0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/rl_for_music/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="🗃️ Archive">
+                    <span>🗃️ Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="🔍 Search">
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/us/" title="👤 Us">
+                    <span>👤 Us</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      RL for Music
+    </h1>
+    <div class="post-description">
+      Deep dive into applications of RL in music generation
+    </div>
+    <div class="post-meta"><span title='2025-09-11 00:00:00 +0000 UTC'>September 11, 2025</span>&nbsp;·&nbsp;Hossein Nikdel
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#teaching-mammadai-to-compose--from-noise-to-music-with-rl" aria-label="Teaching “MammadAI” to Compose — From Noise to Music with RL">Teaching “MammadAI” to Compose — From Noise to Music with RL</a><ul>
+                        
+                <li>
+                    <a href="#abstract" aria-label="Abstract">Abstract</a></li>
+                <li>
+                    <a href="#1-introduction" aria-label="1. Introduction">1. Introduction</a></li>
+                <li>
+                    <a href="#2-imitation-learning--early-challenges" aria-label="2. Imitation Learning &amp; Early Challenges">2. Imitation Learning &amp; Early Challenges</a></li>
+                <li>
+                    <a href="#3-reinforcement-learning--music-theory-google-2016" aria-label="3. Reinforcement Learning &#43; Music Theory (Google, 2016)">3. Reinforcement Learning + Music Theory (Google, 2016)</a></li>
+                <li>
+                    <a href="#4-reinforcement-learning-from-human-feedback-rlhf--music-language-models-google-2024" aria-label="4. Reinforcement Learning from Human Feedback (RLHF) &amp; Music Language Models (Google, 2024)">4. Reinforcement Learning from Human Feedback (RLHF) &amp; Music Language Models (Google, 2024)</a></li>
+                <li>
+                    <a href="#5-implications--lessons" aria-label="5. Implications &amp; Lessons">5. Implications &amp; Lessons</a></li>
+                <li>
+                    <a href="#6-conclusion" aria-label="6. Conclusion">6. Conclusion</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="teaching-mammadai-to-compose--from-noise-to-music-with-rl">Teaching “MammadAI” to Compose — From Noise to Music with RL<a hidden class="anchor" aria-hidden="true" href="#teaching-mammadai-to-compose--from-noise-to-music-with-rl">#</a></h1>
+<h2 id="abstract">Abstract<a hidden class="anchor" aria-hidden="true" href="#abstract">#</a></h2>
+<p>This blog post describes a multi-stage project in which MammadAI, a robot musician, evolves from producing random noise to composing music aligned with human preferences. The progression moves through imitation learning, reinforcement learning with music theory constraints, and finally reinforcement learning from human feedback (RLHF). Drawing on prior studies — including Google’s work in 2016 and in 2024 — this post presents methodology, results, and implications for music generation.</p>
+<hr>
+<h2 id="1-introduction">1. Introduction<a hidden class="anchor" aria-hidden="true" href="#1-introduction">#</a></h2>
+<p>Machine learning models have made strong progress in generating music, but they still struggle with long-term structure, audience feedback, and matching what humans like. MammadAI is a model used to explore how combining different learning approaches can overcome these challenges. The three main phases are:</p>
+<ol>
+<li>Learning from demonstrations (imitation learning) to get a sense of musical style and structure.</li>
+<li>Using music theory constraints via reinforcement learning (RL) to impose rules.</li>
+<li>Aligning outputs with human preferences via RLHF (reinforcement learning from human feedback).
+<img alt="1" loading="lazy" src="/posts/rl_for_music/figs/1.jpg"></li>
+</ol>
+<hr>
+<h2 id="2-imitation-learning--early-challenges">2. Imitation Learning &amp; Early Challenges<a hidden class="anchor" aria-hidden="true" href="#2-imitation-learning--early-challenges">#</a></h2>
+<ul>
+<li>
+<p><strong>Problem</strong>: Pure generative models often lack long-term musical structure. They don’t improve based on audience feedback, and defining a reward function for music is hard.</p>
+</li>
+<li>
+<p><strong>Solution</strong>: Use imitation learning (for example, GAIL) to learn a reward function from demonstrations.<br>
+<img alt="2" loading="lazy" src="/posts/rl_for_music/figs/2.jpg"></p>
+</li>
+<li>
+<p><strong>Setup</strong>:</p>
+<ul>
+<li>A dataset of <strong>10 melodies</strong> and <strong>5 rhythmic accompaniments</strong>.</li>
+<li>States defined in several ways:
+<ol>
+<li>A 128-dimensional binary snapshot of the current 16th note (which pitches just played).</li>
+<li>A 128-dimensional vector counting how many times each pitch has been played so far.</li>
+<li>Similar, but giving lower weight to notes played a long time ago.</li>
+</ol>
+</li>
+<li>Actions correspond to 89 possible piano notes + a “silent” action.<br>
+<img alt="3" loading="lazy" src="/posts/rl_for_music/figs/3.jpg"></li>
+</ul>
+</li>
+<li>
+<p><strong>Outcome</strong>: The model begins to make sounds that feel musical, but still quite far from satisfying human standards.</p>
+</li>
+</ul>
+<p><img alt="4" loading="lazy" src="/posts/rl_for_music/figs/4.jpg"></p>
+<hr>
+<h2 id="3-reinforcement-learning--music-theory-google-2016">3. Reinforcement Learning + Music Theory (Google, 2016)<a hidden class="anchor" aria-hidden="true" href="#3-reinforcement-learning--music-theory-google-2016">#</a></h2>
+<ul>
+<li>In 2016, <strong>Google’s Magenta team</strong> introduced a method to combine generative models (Note-RNN) with reinforcement learning. The RL algorithm used was <strong>DQN (Deep Q-Network)</strong>.</li>
+</ul>
+<p><img alt="4" loading="lazy" src="/posts/rl_for_music/figs/5.jpg"></p>
+<ul>
+<li>
+<p><strong>Reward</strong>: Two parts</p>
+<ol>
+<li>A term preserving what the model learned from data (probability from the Note RNN).</li>
+<li>A <em>music theory reward</em> enforcing constraints, such as: staying in one key, beginning and ending on tonic, avoiding excessive repetition, avoiding very large leaps, having distinct highest and lowest notes, encouraging motifs and their repetition, etc.</li>
+</ol>
+</li>
+<li>
+<p><strong>Results</strong>: Compared to the pure Note-RNN, the RL-tuned model improved significantly on behaviors defined in music theory (such as fewer out-of-key notes, fewer repeated notes, etc.). Listeners preferred the RL-tuned versions. :contentReference</p>
+</li>
+</ul>
+<hr>
+<h2 id="4-reinforcement-learning-from-human-feedback-rlhf--music-language-models-google-2024">4. Reinforcement Learning from Human Feedback (RLHF) &amp; Music Language Models (Google, 2024)<a hidden class="anchor" aria-hidden="true" href="#4-reinforcement-learning-from-human-feedback-rlhf--music-language-models-google-2024">#</a></h2>
+<ul>
+<li>
+<p>More recently, Google (2024) introduced <strong>MusicRL</strong>, built by fine-tuning a pretrained music language model called MusicLM with human feedback.
+<img alt="6" loading="lazy" src="/posts/rl_for_music/figs/6.jpg"></p>
+</li>
+<li>
+<p><strong>How it works</strong>:</p>
+<ul>
+<li>MusicLM is trained on pairs of captions (text prompts) and melodies. This lets it generate music in response to prompts.</li>
+<li>To handle the fact that users may dislike what it generates, they build a <em>reward model</em>. The reward model takes a prompt + a generated piece and outputs a scalar showing how much users prefer that output.</li>
+<li>Training the reward model involves showing humans two generated versions for the same prompt; asking which one they prefer; repeating this many times to build a dataset of pairwise preferences.
+<img alt="7" loading="lazy" src="/posts/rl_for_music/figs/7.jpg"></li>
+</ul>
+</li>
+<li>
+<p><strong>Algorithm</strong>: They used <strong>PPO (Proximal Policy Optimization)</strong> to fine-tune the MusicLM model using the reward model.</p>
+</li>
+<li>
+<p><strong>Results</strong>:</p>
+<ul>
+<li>Models fine-tuned with RLHF (MusicRL-R, MusicRL-U, MusicRL-RU) perform significantly better than the baseline MusicLM according to human raters. :contentReference</li>
+<li>The combination of text adherence, audio quality, and user preference signals leads to the best overall performance.
+<img alt="8" loading="lazy" src="/posts/rl_for_music/figs/8.jpg"></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="5-implications--lessons">5. Implications &amp; Lessons<a hidden class="anchor" aria-hidden="true" href="#5-implications--lessons">#</a></h2>
+<ul>
+<li>Combining <strong>generative modeling</strong> with reinforcement learning helps address issues like structure and followability in music.</li>
+<li>Embedding <strong>music theory</strong> as reward constraints is effective: it reduces undesirable behaviors and improves musicality.</li>
+<li>Human feedback is essential: what sounds “good” is subjective. RLHF allows the model to adapt to human taste, not just formal rules.</li>
+<li>The multi-stage approach (from imitation learning to theory-driven RL to RLHF) seems promising because each stage fixes some but not all problems.</li>
+</ul>
+<hr>
+<h2 id="6-conclusion">6. Conclusion<a hidden class="anchor" aria-hidden="true" href="#6-conclusion">#</a></h2>
+<p>MammadAI’s journey — from imitation learning to theory-based reinforcement to human-preference alignment — mirrors the evolution of music generation research. The latest results with RLHF show that we can build systems that don’t just obey rules, but also produce music people genuinely prefer.</p>
+<p>There are still open challenges: balancing creativity versus coherence; ensuring variety without losing style; extending to more instruments, rhythms, and genres; adapting to diverse listeners. But the advances so far suggest the gap between machine-made and human-loved music is steadily closing.</p>
+<hr>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<p>Lowe, Sam. <em>An Inverse Reinforcement Learning Approach to Generative Music.</em> 2020. <a href="https://doi.org/10.17615/nmvf-e943">https://doi.org/10.17615/nmvf-e943</a></p>
+<p>Jaques, Natasha, Shixiang Gu, Dzmitry Bahdanau, José Miguel Hernández-Lobato, Richard E. Turner, and Douglas Eck. “Sequence Tutor: Conservative Fine-Tuning of Sequence Generation Models with KL-Control.” <em>arXiv</em>, 2017, <a href="https://arxiv.org/abs/1611.02796">https://arxiv.org/abs/1611.02796</a>.</p>
+<p>Kotecha, Nikhil. “Bach2Bach: Generating Music Using a Deep Reinforcement Learning Approach.” <em>arXiv</em>, 2018, <a href="https://arxiv.org/abs/1812.01060">https://arxiv.org/abs/1812.01060</a></p>
+<p>Agostinelli, Andrea, Timo I. Denk, Zalán Borsos, Jesse Engel, Mauro Verzetti, Antoine Caillon, Qingqing Huang, Aren Jansen, Adam Roberts, Marco Tagliasacchi, Matt Sharifi, Neil Zeghidour, and Christian Frank. “MusicLM: Generating Music From Text.” <em>arXiv</em>, 2023, <a href="https://arxiv.org/abs/2301.11325">https://arxiv.org/abs/2301.11325</a></p>
+<p>Cideron, Geoffrey, Sertan Girgin, Mauro Verzetti, Damien Vincent, Matej Kastelic, Zalán Borsos, Brian McWilliams, Victor Ungureanu, Olivier Bachem, Olivier Pietquin, Matthieu Geist, Léonard Hussenot, Neil Zeghidour, and Andrea Agostinelli. “MusicRL: Aligning Music Generation to Human Preferences.” <em>arXiv</em>, 2024, <a href="https://arxiv.org/abs/2402.04229?utm_source=chatgpt.com">https://arxiv.org/abs/2402.04229</a>.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/rlhf/">RLHF</a></li>
+      <li><a href="http://localhost:1313/tags/gail/">GAIL</a></li>
+      <li><a href="http://localhost:1313/tags/music/">Music</a></li>
+      <li><a href="http://localhost:1313/tags/rewardmodel/">RewardModel</a></li>
+    </ul>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "rljclub-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

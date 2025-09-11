@@ -10,7 +10,7 @@
 <meta name="description" content="by Ev Zisselman, Itai Lavie, Daniel Soudry, and Aviv Tamar">
 <meta name="author" content="Arash Alikhani">
 <link rel="canonical" href="http://localhost:1313/posts/explore-to-generalize-in-zero-shot-rl/">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css" integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY&#43;IJWZFnspCg=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2211ca3164be7830024f6aad2b3a2e520843a64f8f048445c3401c1249aa051d.css" integrity="sha256-IhHKMWS&#43;eDACT2qtKzouUghDpk&#43;PBIRFw0AcEkmqBR0=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -97,7 +97,7 @@
         <div class="logo">
             <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
             <div class="logo-switches">
-                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -204,8 +204,7 @@
 
   <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
 <p>This paper studies the problem of zero-shot generalization in reinforcement learning and introduces an algorithm that trains an ensamble of maximum reward seeking agents and an maximum entropy agent. At test time, either the ensemble agrees on an action, and we generalize well, or we take exploratory actions with the help of maximum entropy agent and drive us to a novel part of the state space, where the ensemble may potentially agree again. This method combined with an invariance based approach achieves new state-of-the-art results on ProcGen.</p>
-<p><img loading="lazy" src="expgen.gif" alt="expgen overview animation"  />
-</p>
+<p><img alt="expgen overview animation" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/expgen.gif"></p>
 <h2 id="background">Background<a hidden class="anchor" aria-hidden="true" href="#background">#</a></h2>
 <p>I know it&rsquo;s a lot to take in! You may be wondering:</p>
 <ul>
@@ -220,8 +219,7 @@
 <p>Don&rsquo;t worry! We are going to cover all of that and more! And you are going to fully understand this paper and finish reading this article with an smile 🙂!</p>
 <h3 id="what-is-reinforcement-learning">What is reinforcement learning?<a hidden class="anchor" aria-hidden="true" href="#what-is-reinforcement-learning">#</a></h3>
 <p>Reinforcement learning is learning what to do—how to map situations to actions—so as to maximize a numerical reward signal. Imagine yourself right now, in reinforcement learning terms, you are an agent and everything that is not you, is your environment. You perceive the world through your senses (e.g., eyes, ears, etc.) and what you perceive turns into electrical signals that your brain processes to form an understanding of your surroundings (state). Based on this understanding, you make decisions (actions) with the goal of achieving the best possible outcome for yourself (reward).</p>
-<p><img loading="lazy" src="rl.png#center" alt="reinforcement learning diagram"  />
-</p>
+<p><img alt="reinforcement learning diagram" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/rl.png#center"></p>
 <p>In a more formal sense, reinforcement learning involves the following components:</p>
 <ul>
 <li><strong>Agent</strong>: The learner or decision maker (e.g., you).</li>
@@ -242,8 +240,7 @@ $$</p>
 <h3 id="what-generalization-means-for-rl">What generalization means for RL?<a hidden class="anchor" aria-hidden="true" href="#what-generalization-means-for-rl">#</a></h3>
 <p>In reinforcement learning, generalization involves an agent&rsquo;s ability to apply learned policies or value functions to new states or environments that it has not encountered during training. This is essential because it is often impractical or impossible to train an agent on every possible state it might encounter.</p>
 <p>There are bunch of methods that researchers have used to tackle the problem of generalization in reinforcement learning that are summarized in the following diagram.</p>
-<p><img loading="lazy" src="gms.png#center" alt="generalization methods in RL"  />
-</p>
+<p><img alt="generalization methods in RL" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/gms.png#center"></p>
 <p>This paper focuses on RL-Specific solutions and specifically exploration technique to tackle the problem of generalization. If you&rsquo;re interested to learn more about the generalization problem in reinforcement learning please refer to reference [3].</p>
 <h3 id="what-is-zero-shot-generalization">What is zero-shot generalization?<a hidden class="anchor" aria-hidden="true" href="#what-is-zero-shot-generalization">#</a></h3>
 <p>Zero-shot generalization in RL refers to the ability of an agent to perform well in entirely new environments or tasks without any prior specific training or fine-tuning on those environments or tasks. This is a significant challenge because it requires the agent to leverage its learned representations and policies in a highly flexible and adaptive manner.</p>
@@ -305,13 +302,11 @@ $$</p>
 <p>This paper uses IDAAC algorithm which is a special kind of DAAC algorithm as its invariance based algorithm.</p>
 <p>DAAC (Decoupled Advantage Actor-Critic) uses two separate networks, one for learning the policy and advantage, and one for learning the value. The value estimates are used to compute the advantage targets.</p>
 <p>IDAAC (Invariant Decoupled Advantage Actor-Critic) adds an additional regularizer to the DAAC policy encoder to ensure that it does not contain episode-specific information. The encoder is trained adversarially with a discriminator so that it cannot classify which observation from a given pair $(s_i, s_j)$ was first in a trajectory.</p>
-<p><img loading="lazy" src="idaac.png#center" alt="Invariant Decoupled Advantage Actor-Critic"  />
-</p>
+<p><img alt="Invariant Decoupled Advantage Actor-Critic" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/idaac.png#center"></p>
 <p>For more information about IDAAC algorithm please refer to reference [4].</p>
 <h3 id="what-the-heck-is-procgen">What the heck is ProcGen?!!!<a hidden class="anchor" aria-hidden="true" href="#what-the-heck-is-procgen">#</a></h3>
 <p><a href="https://github.com/openai/procgen">Procgen</a> is a benchmark suite for evaluating the generalization capabilities of reinforcement learning agents. It was developed by OpenAI and consists of a collection of procedurally generated environments that vary in terms of visual appearance, dynamics, and difficulty. The goal of Procgen is to provide a standardized and challenging set of environments that can be used to assess the ability of RL algorithms to generalize to unseen scenarios.</p>
-<p><img loading="lazy" src="procgen.gif#center" alt="Procgen"  />
-</p>
+<p><img alt="Procgen" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/procgen.gif#center"></p>
 <p>If you are new to reinforcement learning, I know these explanations are a lot to take in! If you find yourself lost, I recommend to check out the following courses at your leisure:</p>
 <ul>
 <li><a href="https://huggingface.co/learn/deep-rl-course">Deep Reinforcement Learning (by Hugging Face 🤗)</a></li>
@@ -327,12 +322,10 @@ $$</p>
 <p>After reviewing all this we can focus on the rest of the paper!</p>
 <h3 id="hidden-maze-experiment">Hidden Maze Experiment<a hidden class="anchor" aria-hidden="true" href="#hidden-maze-experiment">#</a></h3>
 <p>One of the key observation of the authors of this paper is that invariance is not enough for zero-shot generalization of reinforcemen learning algorithm. They designed the hidden maze experiment too demonstrate that. Imagine Maze, but with the walls and goal hidden in the observation. Arguably, this is the most task-invariant observation possible, such that a solution can still be obtained in a reasonable time.</p>
-<p><img loading="lazy" src="hmaze.png#center" alt="Hidden Maze Experiment"  />
-</p>
+<p><img alt="Hidden Maze Experiment" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/hmaze.png#center"></p>
 <p>An agent with memory can be trained to optimally solve all training tasks: figuring out wall positions by trying to move ahead and observing the resulting motion, and identifying based on its movement history in which training maze it is currently in. Obviously, such a strategy will not generalize to test mazes. Performance in Maze, where the strategy for solving any particular training task must be indicative of that task, has largely not improved by methods based on invariance</p>
 <p>The following figure shows PPO performance on the hidden maze task, indicating severe overfitting.</p>
-<p><img loading="lazy" src="hmazer.png#center" alt="Hidden Maze Experiment Result"  />
-</p>
+<p><img alt="Hidden Maze Experiment Result" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/hmazer.png#center"></p>
 <p>As described by [5], an agent can overcome test-time errors in its policy by treating the perfect policy as an unobserved variable. The resulting decision making problem, termed the epistemic POMDP, may require some exploration at test time to resolve uncertainty. The article further proposed the LEEP algorithm based on this principle, which trains an ensemble of agents and essentially chooses randomly between the members when the ensemble does not agree, and was the first method to present substantial generalization improvement on Maze.</p>
 <p>In this paper authors extend this idea and asked, How to improve exploration at test time?, and their approach is based on a novel discovery, when they train an agent to explore the training domains using a maximum entropy objective, they observe that the learned exploration behavior generalizes surprisingly well (much better than the generalization attained when training the agent to maximize reward).</p>
 <p>In the following section we gonna dig deep into internals of maximum entropy policy.</p>
@@ -373,29 +366,23 @@ $$</p>
 <p>Specifically, in this work we use the policy gradient algorithm PPOو where at every time step $t$, the state $s_t^{\text{k-NN}}$ is chosen from previous states $\{ s_t \} _ {t=1} ^ {t-1}$ of the same episode. To improve computational efficiency, instead of taking the full observation as the state (64 x 64 RGB image), we sub-sample the observation by applying average pooling of 3 x 3 to produce an image of size 21 x 21.</p>
 <p>We found that agents trained for maximum entropy exploration exhibit a smaller generalization gap compared with the standard approach of training solely with extrinsic reward. The policies are equipped with a memory unit (GRU) to allow learning of deterministic policies that maximize the entropy.</p>
 <p>In all three environments, we demonstrate a small generalization gap, as test performance on unseen levels closely follows the performance achieved during training.</p>
-<p><img loading="lazy" src="mxentgen.png#center" alt="Generalization of maxEnt Policy"  />
-</p>
+<p><img alt="Generalization of maxEnt Policy" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/mxentgen.png#center"></p>
 <p>In addition, we verify that the train results are near optimal by comparing with a hand designed approximately optimal exploration policy. For example, on Maze we use the well known maze exploring strategy wall follower, also known as the left/right-hand rule.</p>
 <h2 id="expgen-algorithm">ExpGen Algorithm<a hidden class="anchor" aria-hidden="true" href="#expgen-algorithm">#</a></h2>
 <p>Our main insight is that, given the generalization property of the entropy maximization policy established above, an agent can apply this behavior in a test MDP and expect effective exploration at test time. We pair this insight with the epistemic POMDP idea, and propose to play the exploration policy when the agent faces epistemic uncertainty, hopefully driving the agent to a different state where the reward-seeking policy is more certain.</p>
 <p>Our framework comprises two parts: an entropy maximizing network and an ensemble of networks that maximize an extrinsic reward to evaluate epistemic uncertainty. The first step entails training a network equipped with a memory unit to obtain a maxEnt policy $\pi_H$ that maximizes entropy. Next, we train an ensemble of memory-less policy networks $\{ \pi _ r ^ j \} _ {j=1} ^ {m} $ to maximize extrinsic reward.</p>
 <p>Here is the ExpGen algorithm,</p>
-<p><img loading="lazy" src="expgen.png#center" alt="ExpGen Algorithm"  />
-</p>
+<p><img alt="ExpGen Algorithm" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/expgen.png#center"></p>
 <p>We consider domains with a finite action space, and say that the policy $\pi _ r ^ i$ is certain at state $s$ if its action $a_i \sim \pi _ r ^ i (a|s)$ is in consensus with the ensemble: $a_i = a_j$ for the majority of $k$ out of $m$, where $k$ is a hyperparameter of our algorithm.</p>
-<p><img loading="lazy" src="maze.gif#center" alt="ExpGen Algorithm In Action"  />
-</p>
+<p><img alt="ExpGen Algorithm In Action" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/maze.gif#center"></p>
 <p>Switching between two policies may result in a case where the agent repeatedly toggles between two states (if, say, the maxEnt policy takes the agent from state $s_1$ to a state $s_2$, where the ensemble agrees on an action that again moves to state $s_1$.). To avoid such “meta-stable” behavior, we randomly choose the number of maxEnt steps $n_{\pi_{\mathcal{H}}}$ from a Geometric distribution, $n_{\pi_{\mathcal{H}}} \sim Geom(\alpha)$.</p>
 <h2 id="experiments">Experiments<a hidden class="anchor" aria-hidden="true" href="#experiments">#</a></h2>
 <p>Our experimental setup follows ProcGen&rsquo;s easy configuration, wherein agents are trained on 200 levels for 25M steps and subsequently tested on random levels. All agents are implemented using the IMPALA (Importance Weighted Actor-Learner Architectures) convolutional architecture, and trained using PPO or IDAAC. For the maximum entropy agent $\pi_H$ we incorporate a single GRU at the final embedding of the IMPALA convolutional architecture. For all games, we use the same parameter $\alpha=0.5$ of the Geometric distribution and form an ensemble of 10 networks.</p>
-<p><img loading="lazy" src="impala.png#center" alt="IMPALA"  />
-</p>
+<p><img alt="IMPALA" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/impala.png#center"></p>
 <p>Following figure is comparison across all ProcGen games, with 95% bootstrap CIs highlighted in color. Score distributions of ExpGen, PPO, PLR, UCB-DrAC, PPG and IDAAC.</p>
-<p><img loading="lazy" src="comp1.png#center" alt="Result Comparison"  />
-</p>
+<p><img alt="Result Comparison" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/comp1.png#center"></p>
 <p>Following figure shows in each row, the probability of algorithm X outperforming algorithm Y. The comparison illustrates the superiority of ExpGen over the leading contender IDAAC with probability 0.6, as well as over other methods with even higher probability.</p>
-<p><img loading="lazy" src="comp2.png#center" alt="Result Comparison"  />
-</p>
+<p><img alt="Result Comparison" loading="lazy" src="/posts/explore-to-generalize-in-zero-shot-rl/comp2.png#center"></p>
 <h2 id="see-also">See Also<a hidden class="anchor" aria-hidden="true" href="#see-also">#</a></h2>
 <ul>
 <li><a href="https://github.com/EvZissel/expgen">PyTorch implementation of ExpGen @ GitHub</a></li>
@@ -455,7 +442,7 @@ $$</p>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
 
     <span>
         Powered by

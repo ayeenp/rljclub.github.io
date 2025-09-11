@@ -4,10 +4,108 @@
     <title>Tags on 🧠 RL Journal Club</title>
     <link>http://localhost:1313/tags/</link>
     <description>Recent content in Tags on 🧠 RL Journal Club</description>
-    <generator>Hugo -- 0.129.0</generator>
+    <generator>Hugo -- 0.150.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 06 Aug 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 11 Sep 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GAIL</title>
+      <link>http://localhost:1313/tags/gail/</link>
+      <pubDate>Thu, 11 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/gail/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Music</title>
+      <link>http://localhost:1313/tags/music/</link>
+      <pubDate>Thu, 11 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/music/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RewardModel</title>
+      <link>http://localhost:1313/tags/rewardmodel/</link>
+      <pubDate>Thu, 11 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/rewardmodel/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>RLHF</title>
+      <link>http://localhost:1313/tags/rlhf/</link>
+      <pubDate>Thu, 11 Sep 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/rlhf/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>A2C</title>
+      <link>http://localhost:1313/tags/a2c/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/a2c/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Actor-Critic</title>
+      <link>http://localhost:1313/tags/actor-critic/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/actor-critic/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Continuous Action Space</title>
+      <link>http://localhost:1313/tags/continuous-action-space/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/continuous-action-space/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Discrete Action Space</title>
+      <link>http://localhost:1313/tags/discrete-action-space/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/discrete-action-space/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>DQN</title>
+      <link>http://localhost:1313/tags/dqn/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/dqn/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>GUI</title>
+      <link>http://localhost:1313/tags/gui/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/gui/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>NAF</title>
+      <link>http://localhost:1313/tags/naf/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/naf/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Reinforcement Learning</title>
+      <link>http://localhost:1313/tags/reinforcement-learning/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/reinforcement-learning/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>SAC</title>
+      <link>http://localhost:1313/tags/sac/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/sac/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Value-Based</title>
+      <link>http://localhost:1313/tags/value-based/</link>
+      <pubDate>Sun, 17 Aug 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/value-based/</guid>
+      <description></description>
+    </item>
     <item>
       <title>2024</title>
       <link>http://localhost:1313/tags/2024/</link>
