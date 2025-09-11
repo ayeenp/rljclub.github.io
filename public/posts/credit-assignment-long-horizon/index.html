@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Credit Assignment in Long-Horizon Reinforcement Learning | 🧠 RL Journal Club</title>
+<meta name="keywords" content="credit-assignment, temporal-dependencies, long-horizon, reward-shaping, RUDDER, hierarchical-rl, multi-agent, foundational-models">
+<meta name="description" content="A comprehensive survey of the temporal credit assignment problem in RL and modern solutions">
+<meta name="author" content="Morteza Abolghasemi, Amirhossein Tighkhorshid">
+<link rel="canonical" href="http://localhost:1313/posts/credit-assignment-long-horizon/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css" integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/credit-assignment-long-horizon/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="🗃️ Archive">
+                    <span>🗃️ Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="🔍 Search">
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/us/" title="👤 Us">
+                    <span>👤 Us</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Credit Assignment in Long-Horizon Reinforcement Learning
+    </h1>
+    <div class="post-description">
+      A comprehensive survey of the temporal credit assignment problem in RL and modern solutions
+    </div>
+    <div class="post-meta"><span title='2025-09-10 00:00:00 +0000 UTC'>September 10, 2025</span>&nbsp;·&nbsp;Morteza Abolghasemi, Amirhossein Tighkhorshid
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#the-fundamental-challenge" aria-label="The Fundamental Challenge">The Fundamental Challenge</a></li>
+                <li>
+                    <a href="#memory-vs-credit-assignment-a-crucial-distinction" aria-label="Memory vs. Credit Assignment: A Crucial Distinction">Memory vs. Credit Assignment: A Crucial Distinction</a></li>
+                <li>
+                    <a href="#architectural-solutions" aria-label="Architectural Solutions">Architectural Solutions</a><ul>
+                        
+                <li>
+                    <a href="#dynamic-systems-and-meta-mechanisms" aria-label="Dynamic Systems and Meta-Mechanisms">Dynamic Systems and Meta-Mechanisms</a></li>
+                <li>
+                    <a href="#modular-vs-non-modular-approaches" aria-label="Modular vs. Non-Modular Approaches">Modular vs. Non-Modular Approaches</a></li></ul>
+                </li>
+                <li>
+                    <a href="#main-solution-paradigms" aria-label="Main Solution Paradigms">Main Solution Paradigms</a><ul>
+                        
+                <li>
+                    <a href="#1-return-decomposition-and-reward-reshaping" aria-label="1. Return Decomposition and Reward Reshaping">1. Return Decomposition and Reward Reshaping</a></li>
+                <li>
+                    <a href="#2-architectural-and-hierarchical-solutions" aria-label="2. Architectural and Hierarchical Solutions">2. Architectural and Hierarchical Solutions</a></li>
+                <li>
+                    <a href="#3-multi-agent-credit-assignment" aria-label="3. Multi-Agent Credit Assignment">3. Multi-Agent Credit Assignment</a></li>
+                <li>
+                    <a href="#4-leveraging-foundational-models" aria-label="4. Leveraging Foundational Models">4. Leveraging Foundational Models</a></li></ul>
+                </li>
+                <li>
+                    <a href="#comparative-analysis" aria-label="Comparative Analysis">Comparative Analysis</a></li>
+                <li>
+                    <a href="#current-challenges-and-future-directions" aria-label="Current Challenges and Future Directions">Current Challenges and Future Directions</a></li>
+                <li>
+                    <a href="#the-path-forward" aria-label="The Path Forward">The Path Forward</a></li>
+                <li>
+                    <a href="#conclusion" aria-label="Conclusion">Conclusion</a></li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>The temporal credit assignment problem stands as one of the most fundamental and persistent challenges in reinforcement learning. When an agent receives a reward after executing a long sequence of actions, determining which specific decisions were truly responsible for that outcome becomes a complex puzzle.</p>
+<p><img loading="lazy" src="cropped_RPL_abstract.gif#center" alt="Solving a long-horizon task with reinforcement learning"  />
+</p>
+<p>Consider playing a chess game where a single suboptimal move in the opening leads to an inevitable loss 40 moves later. How does the learning algorithm identify that early mistake among all the subsequent decisions? This is the essence of the <strong>temporal credit assignment problem (CAP)</strong> - the difficulty of linking actions to their long-term consequences when feedback is sparse and delayed.</p>
+<h2 id="the-fundamental-challenge">The Fundamental Challenge<a hidden class="anchor" aria-hidden="true" href="#the-fundamental-challenge">#</a></h2>
+<p>The credit assignment problem becomes particularly acute in environments with <strong>sparse and delayed rewards</strong>. Unlike dense reward settings where agents receive immediate feedback for each action, real-world scenarios often provide only terminal rewards after long episodes. This creates several critical issues:</p>
+<ul>
+<li><strong>Temporal lag</strong>: The gap between a pivotal action and its consequence</li>
+<li><strong>Signal dilution</strong>: Weak reward signals spread across many actions</li>
+<li><strong>Causal confusion</strong>: Difficulty distinguishing truly important actions from coincidental ones</li>
+</ul>
+<p>Traditional RL algorithms struggle with these challenges. Temporal Difference (TD) learning suffers from bias due to bootstrapping, while Monte Carlo methods face high variance from delayed rewards. This necessitates more sophisticated approaches that can effectively bridge long temporal dependencies.</p>
+<h2 id="memory-vs-credit-assignment-a-crucial-distinction">Memory vs. Credit Assignment: A Crucial Distinction<a hidden class="anchor" aria-hidden="true" href="#memory-vs-credit-assignment-a-crucial-distinction">#</a></h2>
+<p><img loading="lazy" src="temporal_dependencies_rl.png#center" alt="Temporal Dependencies in RL"  />
+</p>
+<p>A common misconception is that increasing an agent&rsquo;s memory capacity automatically solves credit assignment. Recent research with Transformer-based RL agents reveals these are distinct capabilities:</p>
+<ul>
+<li><strong>Memory</strong>: The ability to recall past observations to inform current decisions</li>
+<li><strong>Credit Assignment</strong>: The ability to determine which past actions caused future rewards</li>
+</ul>
+<p>Transformers excel at memory tasks like the Passive T-Maze (remembering initial information for later use) but struggle with credit assignment tasks like the Active T-Maze (linking unrewarded exploration to distant rewards). This distinction highlights that solutions must go beyond memory enhancement to explicitly model causal relationships.</p>
+<h2 id="architectural-solutions">Architectural Solutions<a hidden class="anchor" aria-hidden="true" href="#architectural-solutions">#</a></h2>
+<p><img loading="lazy" src="mechanism_modification.png#center" alt="Modification of Mechanisms"  />
+</p>
+<h3 id="dynamic-systems-and-meta-mechanisms">Dynamic Systems and Meta-Mechanisms<a hidden class="anchor" aria-hidden="true" href="#dynamic-systems-and-meta-mechanisms">#</a></h3>
+<p>Modern approaches recognize that learning algorithms themselves are dynamic systems that can be modified to handle temporal dependencies better. The progression from simple mechanisms to complex meta-mechanisms allows for more sophisticated credit assignment:</p>
+<p><img loading="lazy" src="dynamic_system_evolution.png#center" alt="Dynamic System Evolution"  />
+</p>
+<p><img loading="lazy" src="learning_algorithms_dynamic_systems.png#center" alt="Learning Algorithm Dynamic Systems"  />
+</p>
+<h3 id="modular-vs-non-modular-approaches">Modular vs. Non-Modular Approaches<a hidden class="anchor" aria-hidden="true" href="#modular-vs-non-modular-approaches">#</a></h3>
+<p>The structure of credit assignment mechanisms significantly impacts their effectiveness:</p>
+<p><img loading="lazy" src="modular_credit_assignment.png#center" alt="Modular Credit Assignment"  />
+</p>
+<p><strong>Modular approaches</strong> maintain independence between different decision components, enabling:</p>
+<ul>
+<li>Better transfer learning</li>
+<li>Reduced interference between unrelated decisions</li>
+<li>More interpretable credit attribution</li>
+</ul>
+<p><img loading="lazy" src="non_modular_credit_assignment.png#center" alt="Non-Modular Credit Assignment"  />
+</p>
+<p><strong>Non-modular approaches</strong> with shared hidden variables can capture complex dependencies but may suffer from:</p>
+<ul>
+<li>Increased learning interference</li>
+<li>Reduced transferability</li>
+<li>Higher computational complexity</li>
+</ul>
+<h2 id="main-solution-paradigms">Main Solution Paradigms<a hidden class="anchor" aria-hidden="true" href="#main-solution-paradigms">#</a></h2>
+<h3 id="1-return-decomposition-and-reward-reshaping">1. Return Decomposition and Reward Reshaping<a hidden class="anchor" aria-hidden="true" href="#1-return-decomposition-and-reward-reshaping">#</a></h3>
+<p>This paradigm transforms sparse terminal rewards into dense, informative signals:</p>
+<p><strong>RUDDER (Return Decomposition for Delayed Rewards)</strong></p>
+<ul>
+<li>Reframes the problem as supervised regression</li>
+<li>Redistributes rewards to make expected future returns zero</li>
+<li>Significantly faster than traditional TD methods</li>
+</ul>
+<p><strong>Align-RUDDER</strong></p>
+<ul>
+<li>Learns from few expert demonstrations</li>
+<li>Uses sequence alignment from bioinformatics</li>
+<li>Highly sample-efficient for complex tasks</li>
+</ul>
+<p><strong>ARES (Attention-based Reward Shaping)</strong></p>
+<ul>
+<li>Leverages Transformer attention mechanisms</li>
+<li>Works entirely offline with suboptimal data</li>
+<li>Generates dense rewards from sparse terminal signals</li>
+</ul>
+<h3 id="2-architectural-and-hierarchical-solutions">2. Architectural and Hierarchical Solutions<a hidden class="anchor" aria-hidden="true" href="#2-architectural-and-hierarchical-solutions">#</a></h3>
+<p><strong>Hierarchical Reinforcement Learning (HRL)</strong>
+<img loading="lazy" src="policy_over_options_framework.png#center" alt="Policy-over-options Framework"  />
+</p>
+<ul>
+<li>Decomposes tasks into temporal abstractions</li>
+<li>Uses &ldquo;options&rdquo; or macro-actions spanning multiple steps</li>
+<li>Enables reward propagation across longer horizons</li>
+</ul>
+<p><strong>Temporal Value Transport (TVT)</strong></p>
+<ul>
+<li>Mimics human &ldquo;mental time travel&rdquo;</li>
+<li>Uses attention to link distant actions with rewards</li>
+<li>Provides mechanistic account of long-term credit assignment</li>
+</ul>
+<p><strong>Chunked-TD</strong></p>
+<ul>
+<li>Compresses near-deterministic trajectory regions</li>
+<li>Accelerates credit propagation through predictable sequences</li>
+<li>Reduces effective temporal chain length</li>
+</ul>
+<h3 id="3-multi-agent-credit-assignment">3. Multi-Agent Credit Assignment<a hidden class="anchor" aria-hidden="true" href="#3-multi-agent-credit-assignment">#</a></h3>
+<p>In multi-agent settings, the challenge shifts from &ldquo;which action?&rdquo; to &ldquo;which agent&rsquo;s actions contributed to the group outcome?&rdquo;</p>
+<p><strong>Shapley Counterfactual Credits</strong></p>
+<ul>
+<li>Applies cooperative game theory principles</li>
+<li>Uses Shapley values for provably fair credit distribution</li>
+<li>Employs Monte Carlo sampling to reduce computational complexity</li>
+</ul>
+<h3 id="4-leveraging-foundational-models">4. Leveraging Foundational Models<a hidden class="anchor" aria-hidden="true" href="#4-leveraging-foundational-models">#</a></h3>
+<p>The newest paradigm exploits pre-trained models&rsquo; world knowledge:</p>
+<p><strong>CALM (Credit Assignment with Language Models)</strong></p>
+<ul>
+<li>Uses LLMs to decompose tasks into subgoals</li>
+<li>Provides zero-shot reward shaping</li>
+<li>Automates dense reward function design</li>
+</ul>
+<p>This approach represents a paradigm shift from learning from scratch to transferring structural knowledge from foundation models.</p>
+<h2 id="comparative-analysis">Comparative Analysis<a hidden class="anchor" aria-hidden="true" href="#comparative-analysis">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th>Method</th>
+          <th>Paradigm</th>
+          <th>Strengths</th>
+          <th>Limitations</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>RUDDER</td>
+          <td>Return Decomposition</td>
+          <td>Mathematically grounded, transforms to regression</td>
+          <td>Requires pre-collected data</td>
+      </tr>
+      <tr>
+          <td>Align-RUDDER</td>
+          <td>Demonstration Learning</td>
+          <td>Highly sample-efficient</td>
+          <td>Needs high-quality demonstrations</td>
+      </tr>
+      <tr>
+          <td>ARES</td>
+          <td>Attention-based Shaping</td>
+          <td>Works with any RL algorithm</td>
+          <td>Requires Transformer architecture</td>
+      </tr>
+      <tr>
+          <td>HRL</td>
+          <td>Hierarchical Abstraction</td>
+          <td>Faster learning, better generalization</td>
+          <td>Increases MDP complexity</td>
+      </tr>
+      <tr>
+          <td>Shapley Credits</td>
+          <td>Game Theory</td>
+          <td>Theoretically fair and robust</td>
+          <td>Computational approximations needed</td>
+      </tr>
+      <tr>
+          <td>CALM</td>
+          <td>LLM-based</td>
+          <td>Zero-shot capability</td>
+          <td>Relies on LLM&rsquo;s implicit knowledge</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="current-challenges-and-future-directions">Current Challenges and Future Directions<a hidden class="anchor" aria-hidden="true" href="#current-challenges-and-future-directions">#</a></h2>
+<p>Several critical challenges remain:</p>
+<ol>
+<li>
+<p><strong>Causality vs. Correlation</strong>: Ensuring credit assignment reflects genuine causal relationships rather than spurious correlations</p>
+</li>
+<li>
+<p><strong>Scalability</strong>: Handling tasks with millions of steps or hundreds of agents</p>
+</li>
+<li>
+<p><strong>Human Integration</strong>: Incorporating human feedback efficiently without bias</p>
+</li>
+<li>
+<p><strong>Generalization</strong>: Ensuring methods work across vastly different domains</p>
+</li>
+</ol>
+<h2 id="the-path-forward">The Path Forward<a hidden class="anchor" aria-hidden="true" href="#the-path-forward">#</a></h2>
+<p>The most promising direction appears to be <strong>hybrid systems</strong> that combine multiple paradigms:</p>
+<ul>
+<li><strong>Foundational models</strong> for bootstrapping structural knowledge</li>
+<li><strong>Hierarchical methods</strong> for managing complexity</li>
+<li><strong>Offline data</strong> for improving sample efficiency</li>
+<li><strong>Multi-agent techniques</strong> for cooperative scenarios</li>
+</ul>
+<p>These complementary approaches can create more robust, general-purpose agents capable of solving complex, long-horizon tasks that are central to real-world RL applications.</p>
+<h2 id="conclusion">Conclusion<a hidden class="anchor" aria-hidden="true" href="#conclusion">#</a></h2>
+<p>The temporal credit assignment problem remains a fundamental bottleneck in reinforcement learning, but the field has made remarkable progress in developing sophisticated solutions. From mathematically grounded return decomposition methods to cutting-edge applications of foundational models, researchers are building a diverse toolkit for tackling long-horizon dependencies.</p>
+<p>The evolution from heuristic solutions to theoretically principled frameworks, combined with the strategic use of offline data and pre-trained knowledge, suggests we&rsquo;re moving toward more practical and scalable approaches. As these methods mature and combine, they promise to unlock RL&rsquo;s potential in complex, real-world domains where sparse and delayed rewards are the norm rather than the exception.</p>
+<p>The journey from identifying which action deserves credit to building agents that can reason causally across extended time horizons represents one of the most intellectually challenging and practically important frontiers in artificial intelligence.</p>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<p>[1] Arjona-Medina, J. A., et al. &ldquo;RUDDER: Return Decomposition for Delayed Rewards.&rdquo; NeurIPS, 2019.</p>
+<p>[2] Patil, V., et al. &ldquo;Align-RUDDER: Learning from Few Demonstrations by Reward Redistribution.&rdquo; arXiv, 2020.</p>
+<p>[3] Lin, H., et al. &ldquo;Episodic Return Decomposition by Difference of Implicitly Assigned Sub-Trajectory Reward.&rdquo; 2024.</p>
+<p>[4] Holmes, I., and M. Chi. &ldquo;Attention-Based Reward Shaping for Sparse and Delayed Rewards.&rdquo; arXiv, 2025.</p>
+<p>[5] Chang, M., et al. &ldquo;Modularity in Reinforcement Learning via Algorithmic Independence in Credit Assignment.&rdquo; ICML, 2021.</p>
+<p>[6] Pignatelli, E., et al. &ldquo;CALM: Credit Assignment with Language Models.&rdquo; arXiv, 2024.</p>
+<p>[7] Li, J., et al. &ldquo;Shapley Counterfactual Credits for Multi-Agent Reinforcement Learning.&rdquo; arXiv, 2021.</p>
+<p>[8] Sun, Y., et al. &ldquo;When Do Transformers Shine in RL? Decoupling Memory from Credit Assignment.&rdquo; Mila, 2022.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/credit-assignment/">Credit-Assignment</a></li>
+      <li><a href="http://localhost:1313/tags/temporal-dependencies/">Temporal-Dependencies</a></li>
+      <li><a href="http://localhost:1313/tags/long-horizon/">Long-Horizon</a></li>
+      <li><a href="http://localhost:1313/tags/reward-shaping/">Reward-Shaping</a></li>
+      <li><a href="http://localhost:1313/tags/rudder/">RUDDER</a></li>
+      <li><a href="http://localhost:1313/tags/hierarchical-rl/">Hierarchical-Rl</a></li>
+      <li><a href="http://localhost:1313/tags/multi-agent/">Multi-Agent</a></li>
+      <li><a href="http://localhost:1313/tags/foundational-models/">Foundational-Models</a></li>
+    </ul>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "rljclub-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
