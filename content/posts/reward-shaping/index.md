@@ -5,7 +5,7 @@ date: 2025-09-07T17:14:00+02:00
 cover:
   # --- COVER IMAGE ---
   # Place your main blog post image/gif here
-  image: giff.gif
+  image: aelfoa.gif
   hiddenInSingle: true
 ShowToc: true
 TocOpen: true
