@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Actor-Critic vs. Value-Based: Empirical Trade-offs | 🧠 RL Journal Club</title>
+<meta name="keywords" content="Actor-Critic, Value-Based, DQN, A2C, SAC, NAF, Reinforcement Learning, Continuous Action Space, Discrete Action Space, GUI">
+<meta name="description" content="An empirical comparison of Value-Based and Actor-Critic reinforcement learning algorithms across discrete and continuous action spaces, analyzing trade-offs in convergence speed, stability, and performance.">
+<meta name="author" content="Foad Hassanlou, Mohammad Hossien Jamshidi Goharrizi">
+<link rel="canonical" href="http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.54405a410796490bc874ab6181fac9b675753cc2b91375d8f882566459eca428.css" integrity="sha256-VEBaQQeWSQvIdKthgfrJtnV1PMK5E3XY&#43;IJWZFnspCg=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/actor-critic-vs-value-based-empirical-trade-offs/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+    
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="🧠 RL Journal Club (Alt + H)">🧠 RL Journal Club</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/archives" title="🗃️ Archive">
+                    <span>🗃️ Archive</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search" title="🔍 Search">
+                    <span>🔍 Search</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="🏷️ Tags">
+                    <span>🏷️ Tags</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/us/" title="👤 Us">
+                    <span>👤 Us</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Actor-Critic vs. Value-Based: Empirical Trade-offs
+    </h1>
+    <div class="post-description">
+      An empirical comparison of Value-Based and Actor-Critic reinforcement learning algorithms across discrete and continuous action spaces, analyzing trade-offs in convergence speed, stability, and performance.
+    </div>
+    <div class="post-meta"><span title='2025-08-17 00:00:00 +0000 UTC'>August 17, 2025</span>&nbsp;·&nbsp;Foad Hassanlou, Mohammad Hossien Jamshidi Goharrizi
+
+</div>
+  </header> <div class="toc">
+    <details  open>
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#actor-critic-vs-value-based-empirical-trade-offs" aria-label="Actor-Critic vs. Value-Based: Empirical Trade-offs">Actor-Critic vs. Value-Based: Empirical Trade-offs</a><ul>
+                        
+                <li>
+                    <a href="#introduction" aria-label="Introduction">Introduction</a></li>
+                <li>
+                    <a href="#background" aria-label="Background">Background</a></li>
+                <li>
+                    <a href="#methodology" aria-label="Methodology">Methodology</a><ul>
+                        
+                <li>
+                    <a href="#project-design" aria-label="Project Design">Project Design</a></li>
+                <li>
+                    <a href="#implemented-algorithms" aria-label="Implemented Algorithms">Implemented Algorithms</a><ul>
+                        
+                <li>
+                    <a href="#deep-q-network-dqn" aria-label="Deep Q-Network (DQN)">Deep Q-Network (DQN)</a></li>
+                <li>
+                    <a href="#normalized-advantage-function-naf" aria-label="Normalized Advantage Function (NAF)">Normalized Advantage Function (NAF)</a></li>
+                <li>
+                    <a href="#advantage-actor-critic-a2c" aria-label="Advantage Actor-Critic (A2C)">Advantage Actor-Critic (A2C)</a></li>
+                <li>
+                    <a href="#soft-actor-critic-sac" aria-label="Soft Actor-Critic (SAC)">Soft Actor-Critic (SAC)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#environments" aria-label="Environments">Environments</a><ul>
+                        
+                <li>
+                    <a href="#configuration-and-evaluation" aria-label="Configuration and Evaluation">Configuration and Evaluation</a></li></ul>
+                </li>
+                <li>
+                    <a href="#graphical-user-interface-gui" aria-label="Graphical User Interface (GUI)">Graphical User Interface (GUI)</a></li>
+                <li>
+                    <a href="#interactive-mobile-application" aria-label="Interactive Mobile Application">Interactive Mobile Application</a></li></ul>
+                </li>
+                <li>
+                    <a href="#results" aria-label="Results">Results</a><ul>
+                        
+                <li>
+                    <a href="#discrete-environments" aria-label="Discrete Environments">Discrete Environments</a><ul>
+                        
+                <li>
+                    <a href="#frozenlake-v1" aria-label="FrozenLake-v1">FrozenLake-v1</a></li>
+                <li>
+                    <a href="#mountaincar-v0" aria-label="MountainCar-v0">MountainCar-v0</a></li></ul>
+                </li>
+                <li>
+                    <a href="#continuous-environments" aria-label="Continuous Environments">Continuous Environments</a><ul>
+                        
+                <li>
+                    <a href="#pendulum-v1" aria-label="Pendulum-v1">Pendulum-v1</a></li>
+                <li>
+                    <a href="#halfcheetah-v4" aria-label="HalfCheetah-v4">HalfCheetah-v4</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#discussion--conclusion" aria-label="Discussion &amp; Conclusion">Discussion &amp; Conclusion</a><ul>
+                        
+                <li>
+                    <a href="#analysis--interpretation" aria-label="Analysis &amp; Interpretation">Analysis &amp; Interpretation</a><ul>
+                        
+                <li>
+                    <a href="#continuous-action-spaces" aria-label="Continuous Action Spaces">Continuous Action Spaces</a></li>
+                <li>
+                    <a href="#discrete-action-spaces" aria-label="Discrete Action Spaces">Discrete Action Spaces</a></li></ul>
+                </li>
+                <li>
+                    <a href="#key-findings" aria-label="Key Findings:">Key Findings:</a></li>
+                <li>
+                    <a href="#observed-trade-offs" aria-label="Observed Trade-offs:">Observed Trade-offs:</a></li>
+                <li>
+                    <a href="#observations-based-on-environment-characteristics" aria-label="Observations Based on Environment Characteristics">Observations Based on Environment Characteristics</a></li></ul>
+                </li>
+                <li>
+                    <a href="#limitations-and-future-work" aria-label="Limitations and Future Work">Limitations and Future Work</a><ul>
+                        
+                <li>
+                    <a href="#limitations" aria-label="Limitations">Limitations</a></li>
+                <li>
+                    <a href="#future-work" aria-label="Future Work">Future Work</a></li>
+                <li>
+                    <a href="#real-world-application-robotics" aria-label="Real-World Application: Robotics">Real-World Application: Robotics</a></li></ul>
+                </li>
+                <li>
+                    <a href="#references" aria-label="References">References</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h1 id="actor-critic-vs-value-based-empirical-trade-offs">Actor-Critic vs. Value-Based: Empirical Trade-offs<a hidden class="anchor" aria-hidden="true" href="#actor-critic-vs-value-based-empirical-trade-offs">#</a></h1>
+<h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>In <strong>Reinforcement Learning (RL)</strong>, one of the fundamental questions is:<br>
+<em>Should we focus on learning the value of states, or should we directly learn the optimal policy?</em></p>
+<p><img loading="lazy" src="figs/background.png#center" alt="Value-Based vs. Policy-Based vs. Actor-Critic"  />
+</p>
+<p>Before diving into this comparison, let’s briefly recall what RL is: a branch of machine learning in which an <strong>agent</strong> interacts with an environment to learn how to make decisions that maximize <strong>cumulative reward</strong>.</p>
+<p>Traditionally, RL algorithms fall into two main families:</p>
+<ul>
+<li><strong>Value-Based methods</strong> : which aim to estimate the value of states or state–action pairs.</li>
+<li><strong>Policy-Based methods</strong> : which directly optimize a policy that maps states to actions.</li>
+</ul>
+<p><strong>Actor-Critic algorithms</strong> combine the strengths of both worlds, simultaneously learning a value function and an explicit policy. This hybrid structure can often lead to more stable and efficient learning.</p>
+<p>Value-Based and Actor-Critic approaches represent fundamentally different perspectives: one focuses solely on learning state values, while the other integrates both value and policy learning. Comparing these two perspectives helps us better understand the impact of incorporating value or policy components in different environments.</p>
+<p>In this project, we empirically evaluate these two families in both <strong>discrete</strong> and <strong>continuous</strong> action spaces. Four representative algorithms ( <strong>DQN</strong>, <strong>A2C</strong>, <strong>NAF</strong>, and <strong>SAC</strong> ) were implemented, along with a user-friendly <strong>graphical user interface (GUI)</strong> for training and evaluation.<br>
+Our ultimate goal is to analyze trade-offs such as <strong>convergence speed</strong>, <strong>learning stability</strong>, and <strong>final performance</strong> across diverse scenarios.</p>
+<h2 id="background">Background<a hidden class="anchor" aria-hidden="true" href="#background">#</a></h2>
+<p>The reinforcement learning algorithms used in this project fall into two main families:</p>
+<p><strong>Value-Based</strong><br>
+In this approach, the agent learns only a value function, such as $Q(s, a)$.<br>
+The policy is derived implicitly by selecting the action with the highest value:</p>
+<p>$\pi(s) = \arg\max_a Q(s,a)$</p>
+<p>This method is typically simpler, more stable, and computationally efficient.<br>
+However, it faces limitations when dealing with <strong>continuous action spaces</strong>.<br>
+Example algorithms: <strong>DQN</strong>, <strong>NAF</strong>.</p>
+<p>Value-Based methods are often well-suited for <strong>discrete action spaces</strong> with relatively small state–action domains, where enumerating or approximating the value for each action is feasible.</p>
+<p><img loading="lazy" src="figs/Value-based.png#center" alt="Value-Based RL"  />
+</p>
+<p><strong>Actor-Critic</strong><br>
+In this framework, the agent consists of two components:</p>
+<ul>
+<li><strong>Actor</strong> : a parameterized policy that directly produces actions.</li>
+<li><strong>Critic</strong> : a value function that evaluates the Actor’s performance and guides its updates.</li>
+</ul>
+<p>This combination can provide <strong>greater learning stability</strong>, improved performance in complex environments, and high flexibility in continuous action spaces.<br>
+Example algorithms: <strong>A2C</strong>, <strong>SAC</strong>.</p>
+<p>Actor-Critic methods are generally more suitable for <strong>continuous or high-dimensional action spaces</strong>, as the Actor can output actions directly without exhaustive value estimation.</p>
+<p><img loading="lazy" src="figs/Actor-critic.png#center" alt="Actor-Critic RL"  />
+</p>
+<h2 id="methodology">Methodology<a hidden class="anchor" aria-hidden="true" href="#methodology">#</a></h2>
+<h3 id="project-design">Project Design<a hidden class="anchor" aria-hidden="true" href="#project-design">#</a></h3>
+<p>This project was designed to perform an <strong>empirical comparison</strong> between two major families of reinforcement learning algorithms: <strong>Value-Based</strong> and <strong>Actor-Critic</strong>.<br>
+Four representative algorithms were selected and implemented in diverse <strong>discrete</strong> and <strong>continuous</strong> environments.<br>
+Training, evaluation, and comparison were carried out through a fully interactive, <strong>user-friendly graphical interface</strong>.</p>
+<h3 id="implemented-algorithms">Implemented Algorithms<a hidden class="anchor" aria-hidden="true" href="#implemented-algorithms">#</a></h3>
+<p>Representative algorithms from the two families were selected based on their reported performance in different environments according to the literature.<br>
+For each algorithm, the training procedure was reproduced in accordance with its original paper.<br>
+The overall structure of each algorithm is summarized below:</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Algorithm</th>
+          <th style="text-align: center">Family</th>
+          <th style="text-align: center">Action Space</th>
+          <th style="text-align: center">Description</th>
+          <th style="text-align: center">Reference</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><strong>Deep Q-Network (DQN)</strong></td>
+          <td style="text-align: center">Value-Based</td>
+          <td style="text-align: center">Discrete</td>
+          <td style="text-align: center">Uses <em>experience replay</em> and a fixed <em>target network</em> to stabilize learning.</td>
+          <td style="text-align: center"><a href="https://www.nature.com/articles/nature14236">1</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>Normalized Advantage Function (NAF)</strong></td>
+          <td style="text-align: center">Value-Based</td>
+          <td style="text-align: center">Continuous</td>
+          <td style="text-align: center">Value-based method for continuous spaces using a specific Q-structure to simplify action selection.</td>
+          <td style="text-align: center"><a href="https://arxiv.org/abs/1603.00748">2</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>Advantage Actor-Critic (A2C)</strong></td>
+          <td style="text-align: center">Actor-Critic</td>
+          <td style="text-align: center">Discrete/Continuous</td>
+          <td style="text-align: center">Direct policy optimization guided by an <em>advantage function</em>.</td>
+          <td style="text-align: center"><a href="https://arxiv.org/abs/1602.01783">3</a></td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>Soft Actor-Critic (SAC)</strong></td>
+          <td style="text-align: center">Actor-Critic</td>
+          <td style="text-align: center">Continuous</td>
+          <td style="text-align: center">Off-policy actor-critic method maximizing entropy for stability in complex environments.</td>
+          <td style="text-align: center"><a href="https://arxiv.org/abs/1801.01290">4</a></td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="deep-q-network-dqn">Deep Q-Network (DQN)<a hidden class="anchor" aria-hidden="true" href="#deep-q-network-dqn">#</a></h4>
+<p><img loading="lazy" src="figs/DQN.png#center" alt="DQN Pseudocode"  />
+</p>
+<p><em>The pseudocode of DQN highlights the use of <strong>experience replay</strong> and a <strong>target network</strong>, which together reduce correlations between samples and stabilize training.</em></p>
+<h4 id="normalized-advantage-function-naf">Normalized Advantage Function (NAF)<a hidden class="anchor" aria-hidden="true" href="#normalized-advantage-function-naf">#</a></h4>
+<p><img loading="lazy" src="figs/NAF.png#center" alt="NAF Pseudocode"  />
+</p>
+<p><em>NAF handles <strong>continuous action spaces</strong> by constraining the Q-function into a quadratic form, which makes action selection computationally efficient.</em></p>
+<h4 id="advantage-actor-critic-a2c">Advantage Actor-Critic (A2C)<a hidden class="anchor" aria-hidden="true" href="#advantage-actor-critic-a2c">#</a></h4>
+<p><img loading="lazy" src="figs/A2C.png#center" alt="A2C Pseudocode"  />
+</p>
+<p><em>A2C directly optimizes a parameterized policy (Actor) with guidance from the Critic, using <strong>advantage estimation</strong> to reduce gradient variance and improve learning stability.</em></p>
+<h4 id="soft-actor-critic-sac">Soft Actor-Critic (SAC)<a hidden class="anchor" aria-hidden="true" href="#soft-actor-critic-sac">#</a></h4>
+<p><img loading="lazy" src="figs/SAC.png#center" alt="SAC Pseudocode"  />
+</p>
+<p><em>SAC introduces <strong>entropy maximization</strong> in the objective, encouraging exploration and robustness in complex continuous environments.</em></p>
+<h3 id="environments">Environments<a hidden class="anchor" aria-hidden="true" href="#environments">#</a></h3>
+<p>There were many 2D and 3D environments available so that we could compare them.<br>
+The 12 famous environments are listed below:</p>
+<p><img loading="lazy" src="figs/gifs/mosaic_optimized.gif" alt="Comparison GIF"  />
+</p>
+<p>Four environments from the Gym library were selected to provide a <strong>diverse set of challenges</strong> that cover both <strong>discrete</strong> and <strong>continuous action spaces</strong>, as well as varying levels of <strong>complexity and dynamics</strong>:</p>
+<ul>
+<li><strong>MountainCar-v0</strong> (Discrete): A classic control problem where the agent must drive a car up a hill using discrete acceleration commands. This environment tests <strong>basic exploration and planning</strong> in a low-dimensional, discrete action space.</li>
+<li><strong>Pendulum-v1</strong> (Continuous): Requires applying continuous torque to keep a pendulum upright. This environment is ideal for evaluating <strong>continuous control algorithms</strong> and stabilizing dynamics.</li>
+<li><strong>FrozenLake-v1</strong> (Discrete): A gridworld task where the agent navigates an icy lake to reach a goal while avoiding holes. This environment emphasizes <strong>decision-making under uncertainty</strong> in a discrete setting.</li>
+<li><strong>HalfCheetah-v4</strong> (Continuous): A high-dimensional continuous control environment where the agent controls a bipedal cheetah to run efficiently. It challenges <strong>advanced continuous control and balance strategies</strong>.</li>
+</ul>
+<p>These environments were chosen to allow a <strong>comprehensive comparison</strong> of algorithms across different <strong>action types, state complexities, and control challenges</strong>.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Environment</th>
+          <th style="text-align: center">Type</th>
+          <th style="text-align: center">Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><strong>MountainCar-v0</strong></td>
+          <td style="text-align: center">Discrete</td>
+          <td style="text-align: center">Drive a car up a hill by controlling acceleration in a discrete space.</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>Pendulum-v1</strong></td>
+          <td style="text-align: center">Continuous</td>
+          <td style="text-align: center">Apply torque to keep a pendulum upright and stable.</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>FrozenLake-v1</strong></td>
+          <td style="text-align: center">Discrete</td>
+          <td style="text-align: center">Navigate an icy grid to reach the goal without falling into holes.</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>HalfCheetah-v4</strong></td>
+          <td style="text-align: center">Continuous</td>
+          <td style="text-align: center">Control the speed and balance of a simulated bipedal cheetah for fast running.</td>
+      </tr>
+  </tbody>
+</table>
+<p>Environment snapshots were recorded during training and appear as GIFs in the Results section.</p>
+<h4 id="configuration-and-evaluation">Configuration and Evaluation<a hidden class="anchor" aria-hidden="true" href="#configuration-and-evaluation">#</a></h4>
+<ul>
+<li>Algorithms were run with optimized settings for each environment.</li>
+<li>Key hyperparameters (learning rate, γ, batch size, buffer size) were tuned through trial-and-error, leveraging existing GitHub implementations for optimal performance.</li>
+<li>Comparisons were based on <strong>convergence speed</strong>, <strong>training stability</strong>, and <strong>final performance</strong>.</li>
+</ul>
+<p><strong>Example configurations:</strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Algorithm</th>
+          <th style="text-align: center">Environment</th>
+          <th style="text-align: center">γ</th>
+          <th style="text-align: center">Learning Rate</th>
+          <th style="text-align: center">Batch Size</th>
+          <th style="text-align: center">Buffer Size</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><strong>DQN</strong></td>
+          <td style="text-align: center">FrozenLake</td>
+          <td style="text-align: center">0.93</td>
+          <td style="text-align: center">6e-4</td>
+          <td style="text-align: center">32</td>
+          <td style="text-align: center">4,000</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>A2C</strong></td>
+          <td style="text-align: center">MountainCar</td>
+          <td style="text-align: center">0.96</td>
+          <td style="text-align: center">1e-3</td>
+          <td style="text-align: center">–</td>
+          <td style="text-align: center">–</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>NAF</strong></td>
+          <td style="text-align: center">Pendulum</td>
+          <td style="text-align: center">0.99</td>
+          <td style="text-align: center">3e-4</td>
+          <td style="text-align: center">64</td>
+          <td style="text-align: center">400,000</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>SAC</strong></td>
+          <td style="text-align: center">HalfCheetah</td>
+          <td style="text-align: center">0.99</td>
+          <td style="text-align: center">3e-4</td>
+          <td style="text-align: center">256</td>
+          <td style="text-align: center">1,000,000</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="graphical-user-interface-gui">Graphical User Interface (GUI)<a hidden class="anchor" aria-hidden="true" href="#graphical-user-interface-gui">#</a></h3>
+<p>A user-friendly GUI was developed to simplify training and comparing algorithms, enabling full project execution without direct coding.The code is available at: <a href="https://github.com/Foad-Hassanlou/RL-SimGUI">This Github Link</a> The project structure is as follows:</p>
+<pre tabindex="0"><code>Project_Code/
+├── plots/
+│   └── learning_curves/
+│   │   ├── Continuous/
+│   │   │    ├── Pendulum-v1/
+│   │   │    │   ├── SAC/
+│   │   │    │   └── NAF/
+│   │   │    └── HalfCheetah-v4/
+│   │   │       ├── SAC/
+│   │   │       └── NAF/
+│   │   └── Discrete/
+│   │       ├── FrozenLake-v1/
+│   │       │   ├── DQN/
+│   │       │   │   ├── 4x4
+│   │       │   │   └── 8x8
+│   │       │   └── A2C/
+│   │       │       ├── 4x4
+│   │       │       └── 8x8
+│   │       └── MountainCar-v0/
+│   │           ├── DQN/
+│   │           └── A2C/
+│   ├── comparison_table.png
+│   └── directory_structure.png
+├── requirements/
+│   ├── base.txt
+│   ├── dev.txt
+│   ├── env.txt
+│   └── config.py
+├── src/
+│   ├── agents/
+│   │   ├── a2c.py
+│   │   ├── dqn.py
+│   │   ├── naf.py
+│   │   └── sac.py
+│   ├── envs/
+│   │   ├── continuous_envs.py
+│   │   └── discrete_envs.py
+│   ├── main.py
+│   ├── train.py
+│   └── utils.py
+├── videos/
+│   ├── Continuous/
+│   │    ├── Pendulum-v1/
+│   │    │   ├── SAC/
+│   │    │   └── NAF/
+│   │    └── HalfCheetah-v4/
+│   │       ├── SAC/
+│   │       └── NAF/
+│   └── Discrete/
+│       ├── FrozenLake-v1/
+│       │   ├── DQN/
+│       │   │   ├── 4x4
+│       │   │   └── 8x8
+│       │   └── A2C/
+│       │       ├── 4x4
+│       │       └── 8x8
+│       └── MountainCar-v0/
+│           ├── DQN/
+│           └── A2C/
+├── models/
+│   ├── Continuous/
+│   │    ├── Pendulum-v1/
+│   │    │   ├── SAC/
+│   │    │   └── NAF/
+│   │    └── HalfCheetah-v4/
+│   │       ├── SAC/
+│   │       └── NAF/
+│   └── Discrete/
+│       ├── FrozenLake-v1/
+│       │   ├── DQN/
+│       │   │   ├── 4x4
+│       │   │   └── 8x8
+│       │   └── A2C/
+│       │       ├── 4x4
+│       │       └── 8x8
+│       └── MountainCar-v0/
+│           ├── DQN/
+│           └── A2C/
+└── README.md
+</code></pre><p><strong>Main features:</strong></p>
+<ul>
+<li>Select algorithm, environment, action space type (discrete/continuous), and execution mode (train/test) with just a few clicks.</li>
+<li>Launch training with a <em>Run</em> button, and view results via <em>Show Plots</em> and <em>Show Videos</em>.</li>
+<li>Compare algorithms interactively using a dedicated <strong>Compare Algorithms</strong> window.</li>
+<li>Display key settings such as hyperparameters and project structure.</li>
+<li>Real-time console output for monitoring execution status and system messages.</li>
+</ul>
+<p><img loading="lazy" src="figs/GUI.png#center" alt="GUI"  />
+</p>
+<h3 id="interactive-mobile-application">Interactive Mobile Application<a hidden class="anchor" aria-hidden="true" href="#interactive-mobile-application">#</a></h3>
+<p>In addition to the desktop GUI, a <strong>mobile application for Android and iOS</strong> has been developed to provide interactive access to the project. By simply <strong>scanning the poster</strong>, users can explore various features, including:</p>
+<ul>
+<li>Viewing videos of agent executions in different environments.</li>
+<li>Opening the project’s website for additional resources and documentation.</li>
+<li>Displaying the poster digitally for interactive exploration.</li>
+<li>Comparing learning curves and results across different algorithms.</li>
+</ul>
+<p>The images below showcase some sections of the app interface:</p>
+<p><img loading="lazy" src="figs/combined_grid.png#center" alt="Mobile App Screenshots"  />
+</p>
+<h2 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h2>
+<p>This section presents the empirical evaluation of four reinforcement learning algorithms (<strong>DQN</strong>, <strong>NAF</strong>, <strong>A2C</strong>, and <strong>SAC</strong>) from the <strong>Value-Based</strong> and <strong>Actor-Critic</strong> families, across both <strong>discrete</strong> and <strong>continuous</strong> action space environments. The performance is analyzed based on <strong>final reward</strong>, <strong>convergence speed</strong>, and <strong>training stability</strong>, supported by quantitative metrics, qualitative visualizations (GIFs), and learning curves with a moving average (MA) applied to reduce noise. The experiments were conducted using the Gymnasium library, with optimized hyperparameters (see Methodology for details) and a fixed random seed for reproducibility. Training was performed on a single NVIDIA RTX 4050 GPU, with average runtimes of 1–4 hours per algorithm-environment pair.</p>
+<h3 id="discrete-environments">Discrete Environments<a hidden class="anchor" aria-hidden="true" href="#discrete-environments">#</a></h3>
+<p>The discrete action space environments tested were <strong>FrozenLake-v1</strong> (8x8 grid) and <strong>MountainCar-v0</strong>, which challenge the algorithms with stochastic transitions and sparse rewards, respectively. The table below summarizes the performance, followed by detailed analyses and visualizations.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Environment</th>
+          <th style="text-align: center">Algorithm</th>
+          <th style="text-align: center">Final Reward (Avg ± Std)</th>
+          <th style="text-align: center">Convergence Speed (Episodes to 90% of Max)</th>
+          <th style="text-align: center">Stability (Std of Reward)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><strong>FrozenLake-v1</strong></td>
+          <td style="text-align: center">DQN</td>
+          <td style="text-align: center">0.98 ± 0.14</td>
+          <td style="text-align: center">~1,475</td>
+          <td style="text-align: center">0.50</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">A2C</td>
+          <td style="text-align: center">1.00 ± 0.00</td>
+          <td style="text-align: center">~1,209</td>
+          <td style="text-align: center">0.48</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>MountainCar-v0</strong></td>
+          <td style="text-align: center">DQN</td>
+          <td style="text-align: center">-22.21 ± 79.32</td>
+          <td style="text-align: center">~2,000</td>
+          <td style="text-align: center">81.50</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">A2C</td>
+          <td style="text-align: center">-27.87 ± 62.35</td>
+          <td style="text-align: center">~2,000</td>
+          <td style="text-align: center">40.83</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="frozenlake-v1">FrozenLake-v1<a hidden class="anchor" aria-hidden="true" href="#frozenlake-v1">#</a></h4>
+<p>In <strong>FrozenLake-v1</strong>, a stochastic gridworld, <strong>A2C</strong> outperformed <strong>DQN</strong> in final reward (1.00 vs. 0.98 success rate) and converged faster (~1209 vs. ~1475 episodes to reach 90% of max reward). A2C’s advantage estimation provided greater stability, as evidenced by its lower standard deviation (0.48 vs. 0.50). The GIF below illustrates agent behaviors, showing A2C’s smoother navigation to the goal compared to DQN’s occasional missteps.</p>
+<p><img loading="lazy" src="figs/gifs/frozenlake.gif" alt="FrozenLake - DQN &amp; A2C"  />
+</p>
+<p><img loading="lazy" src="figs/gifs/comparison_FrozenLake-v1_Discrete.gif" alt="Comparison FrozenLake-v1 Result"  />
+</p>
+<p><em>Reward comparison in FrozenLake-v1: A2C converges quickly and maintains stable performance compared to DQN.</em></p>
+<h4 id="mountaincar-v0">MountainCar-v0<a hidden class="anchor" aria-hidden="true" href="#mountaincar-v0">#</a></h4>
+<p>In <strong>MountainCar-v0</strong>, a deterministic environment with sparse rewards, <strong>DQN</strong> achieved a better final reward (-22.21 vs. -27.87 timesteps to goal) but both algorithms converged at similar speeds (~2000 episodes). However, <strong>A2C</strong> exhibited greater stability (std of 40.83 vs. 81.50), avoiding large oscillations in learning. The GIF below shows DQN’s quicker ascent to the hilltop, while A2C maintains more consistent swings.</p>
+<p><img loading="lazy" src="figs/gifs/mountaincar.gif" alt="MountainCar - DQN &amp; A2C"  />
+</p>
+<p><img loading="lazy" src="figs/gifs/comparison_MountainCar-v0_Discrete.gif" alt="Comparison MountainCar-v0 Result"  />
+</p>
+<p><em>Reward comparison in MountainCar-v0: DQN converges faster and reaches higher rewards, while A2C shows greater stability.</em></p>
+<h3 id="continuous-environments">Continuous Environments<a hidden class="anchor" aria-hidden="true" href="#continuous-environments">#</a></h3>
+<p>The continuous action space environments tested were <strong>Pendulum-v1</strong> and <strong>HalfCheetah-v4</strong>, which require precise control and balance in low- and high-dimensional settings, respectively. The table below summarizes the performance.</p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Environment</th>
+          <th style="text-align: center">Algorithm</th>
+          <th style="text-align: center">Final Reward (Avg ± Std)</th>
+          <th style="text-align: center">Convergence Speed (Episodes to 90% of Max)</th>
+          <th style="text-align: center">Stability (Std of Reward)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center"><strong>Pendulum-v1</strong></td>
+          <td style="text-align: center">NAF</td>
+          <td style="text-align: center">-141.17 ± 85.58</td>
+          <td style="text-align: center">~246</td>
+          <td style="text-align: center">199.46</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">SAC</td>
+          <td style="text-align: center">287.66 ± 62.38</td>
+          <td style="text-align: center">~152</td>
+          <td style="text-align: center">113.23</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"><strong>HalfCheetah-v4</strong></td>
+          <td style="text-align: center">NAF</td>
+          <td style="text-align: center">3,693.35 ± 575.60</td>
+          <td style="text-align: center">~862</td>
+          <td style="text-align: center">1,077.01</td>
+      </tr>
+      <tr>
+          <td style="text-align: center"></td>
+          <td style="text-align: center">SAC</td>
+          <td style="text-align: center">10,247.42 ± 584.31</td>
+          <td style="text-align: center">~1,127</td>
+          <td style="text-align: center">2,493.55</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="pendulum-v1">Pendulum-v1<a hidden class="anchor" aria-hidden="true" href="#pendulum-v1">#</a></h4>
+<p>In <strong>Pendulum-v1</strong>, <strong>SAC</strong> significantly outperformed <strong>NAF</strong> in final reward (287.66 vs. -141.17, higher is better) and converged faster (~152 vs. ~246 episodes). SAC’s entropy maximization ensured smoother learning, with a standard deviation of 113.23 compared to NAF’s 199.46. The GIF below highlights SAC’s ability to stabilize the pendulum upright, while NAF struggles with inconsistent torque.</p>
+<p><img loading="lazy" src="figs/gifs/pendulum.gif" alt="Pendulum - NAF &amp; SAC"  />
+</p>
+<p><img loading="lazy" src="figs/gifs/comparison_Pendulum-v1_Continuous.gif" alt="Comparison Pendulum-v1 Result"  />
+</p>
+<p><em>Reward comparison in Pendulum-v1: SAC achieves higher rewards with smoother convergence compared to NAF.</em></p>
+<h4 id="halfcheetah-v4">HalfCheetah-v4<a hidden class="anchor" aria-hidden="true" href="#halfcheetah-v4">#</a></h4>
+<p>In <strong>HalfCheetah-v4</strong>, a high-dimensional control task, <strong>SAC</strong> achieved a much higher final reward (10247.42 vs. 3693.35) but converged slightly slower (~1127 vs. ~862 episodes). SAC’s stability (std of 2493.55 vs. 1077.01) reflects its robustness in complex dynamics, though NAF shows lower variance. The GIF below shows SAC’s fluid running motion compared to NAF’s less coordinated movements.</p>
+<p><img loading="lazy" src="figs/gifs/halfcheetah.gif" alt="HalfCheetah - NAF &amp; SAC"  />
+</p>
+<p><img loading="lazy" src="figs/gifs/comparison_HalfCheetah-v4_Continuous.gif" alt="Comparison HalfCheetah-v4 Result"  />
+</p>
+<p><em>Reward comparison in HalfCheetah-v4: SAC consistently outperforms NAF in both speed and stability.</em></p>
+<h2 id="discussion--conclusion">Discussion &amp; Conclusion<a hidden class="anchor" aria-hidden="true" href="#discussion--conclusion">#</a></h2>
+<p>This project examined the performance differences between <strong>Value-Based</strong> and <strong>Actor-Critic</strong> algorithms in both <strong>discrete</strong> and <strong>continuous</strong> environments.<br>
+The experimental results indicate that <strong>no single algorithm is universally superior</strong>; rather, the <strong>environment characteristics</strong> and <strong>action space type</strong> play a decisive role in determining performance.</p>
+<h3 id="analysis--interpretation">Analysis &amp; Interpretation<a hidden class="anchor" aria-hidden="true" href="#analysis--interpretation">#</a></h3>
+<h4 id="continuous-action-spaces">Continuous Action Spaces<a hidden class="anchor" aria-hidden="true" href="#continuous-action-spaces">#</a></h4>
+<p><strong>SAC</strong> consistently outperformed <strong>NAF</strong> in both <strong>Pendulum-v1</strong> and <strong>HalfCheetah-v4</strong>, thanks to its entropy maximization strategy, which promotes exploration and robustness. NAF’s fixed quadratic Q-function structure limited its flexibility in high-dimensional or complex tasks, leading to slower convergence and higher variance in rewards. SAC’s ability to directly optimize a stochastic policy made it particularly effective in continuous control scenarios.</p>
+<h4 id="discrete-action-spaces">Discrete Action Spaces<a hidden class="anchor" aria-hidden="true" href="#discrete-action-spaces">#</a></h4>
+<p>In <strong>FrozenLake-v1</strong>, a stochastic environment, <strong>A2C</strong>’s stability (due to advantage estimation) gave it an edge over <strong>DQN</strong>, achieving higher success rates and faster convergence. In <strong>MountainCar-v0</strong>, a deterministic environment with a small action space, <strong>DQN</strong>’s value-based approach excelled in final reward and convergence speed, though A2C remained more stable. This highlights the suitability of Value-Based methods for simpler, deterministic settings and Actor-Critic methods for stochastic or complex environments.</p>
+<h3 id="key-findings">Key Findings:<a hidden class="anchor" aria-hidden="true" href="#key-findings">#</a></h3>
+<ul>
+<li>In simple discrete environments, such as <strong>FrozenLake</strong>, Value-Based algorithms (e.g., DQN) achieved competitive performance, but Actor-Critic algorithms (e.g., A2C) showed <strong>faster convergence</strong> and <strong>more stable learning</strong>.</li>
+<li>In continuous and more complex environments, Actor-Critic algorithms — particularly <strong>SAC</strong> — outperformed their Value-Based counterparts in terms of <strong>final reward</strong> and <strong>convergence speed</strong>.</li>
+</ul>
+<h3 id="observed-trade-offs">Observed Trade-offs:<a hidden class="anchor" aria-hidden="true" href="#observed-trade-offs">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: center">Aspect</th>
+          <th style="text-align: center">Value-Based</th>
+          <th style="text-align: center">Actor-Critic</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: center">Simplicity of implementation</td>
+          <td style="text-align: center">Yes</td>
+          <td style="text-align: center">More complex</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Initial learning speed</td>
+          <td style="text-align: center">High in simple environments</td>
+          <td style="text-align: center">Depends on tuning</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Training stability</td>
+          <td style="text-align: center">More oscillations</td>
+          <td style="text-align: center">More stable</td>
+      </tr>
+      <tr>
+          <td style="text-align: center">Suitability for continuous spaces</td>
+          <td style="text-align: center">Not always</td>
+          <td style="text-align: center">Yes</td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Overall,</strong> the choice between Value-Based and Actor-Critic methods should be guided by the <strong>nature of the task</strong>, the <strong>complexity of the environment</strong>, and the <strong>available computational budget</strong>.</p>
+<h3 id="observations-based-on-environment-characteristics">Observations Based on Environment Characteristics<a hidden class="anchor" aria-hidden="true" href="#observations-based-on-environment-characteristics">#</a></h3>
+<p>Our experimental results further reveal that the <strong>nature of the environment</strong>—in terms of action space, state space, and reward structure—significantly impacts algorithm performance:</p>
+<ol>
+<li><strong>Action Space (Discrete vs. Continuous)</strong>
+<ul>
+<li><strong>Discrete Action Spaces</strong>: Value-Based algorithms like DQN tend to perform competitively, especially in small and low-dimensional discrete action spaces. They converge quickly and reliably, but may struggle when the action space grows larger or stochasticity increases. Actor-Critic methods such as A2C can still provide improved stability in these scenarios, especially under stochastic transitions.</li>
+<li><strong>Continuous Action Spaces</strong>: Actor-Critic methods (e.g. SAC) dominate due to their ability to output continuous actions directly. Value-Based methods require specialized approximations (like NAF), which often limit flexibility and performance in high-dimensional or continuous control tasks.</li>
+</ul>
+</li>
+<li><strong>State Space (Low-dimensional vs. High-dimensional)</strong>
+<ul>
+<li><strong>Low-dimensional states</strong> (e.g., MountainCar, FrozenLake) generally favor Value-Based methods, which can efficiently enumerate or approximate Q-values.</li>
+<li><strong>High-dimensional states</strong> (e.g., HalfCheetah) require the policy network of Actor-Critic methods to generalize across large state spaces. These methods better handle complex dynamics and correlations among state variables.</li>
+</ul>
+</li>
+<li><strong>Reward Structure (Sparse vs. Dense)</strong>
+<ul>
+<li><strong>Sparse Reward Environments</strong> (e.g., FrozenLake) challenge Value-Based methods to propagate value signals efficiently, potentially slowing convergence. Actor-Critic algorithms can leverage advantage estimation and policy gradients to maintain learning stability even with sparse rewards.</li>
+<li><strong>Dense Reward Environments</strong> (e.g., HalfCheetah, Pendulum) allow both families to learn effectively, but Actor-Critic methods often achieve smoother and faster convergence due to direct policy optimization combined with value guidance.</li>
+</ul>
+</li>
+</ol>
+<p>The interplay between action space type, state space complexity, and reward sparsity fundamentally shapes the suitability of each algorithm. In general:</p>
+<ul>
+<li><strong>Discrete + Low-dimensional + Dense reward</strong> → Value-Based methods are competitive.</li>
+<li><strong>Continuous + High-dimensional + Sparse or Dense reward</strong> → Actor-Critic methods provide superior learning stability and higher final performance.</li>
+</ul>
+<p>These insights complement the empirical trade-offs already observed in our study, providing a more nuanced understanding of <strong>when and why certain RL algorithms excel under different environment characteristics</strong>.</p>
+<h2 id="limitations-and-future-work">Limitations and Future Work<a hidden class="anchor" aria-hidden="true" href="#limitations-and-future-work">#</a></h2>
+<h3 id="limitations">Limitations<a hidden class="anchor" aria-hidden="true" href="#limitations">#</a></h3>
+<p>The present project, which evaluates the performance of reinforcement learning algorithms (DQN, A2C, NAF, and SAC) in discrete (FrozenLake-v1 and MountainCar-v0) and continuous (Pendulum-v1 and HalfCheetah-v4) environments, provides valuable insights but is subject to several limitations, outlined below:</p>
+<ol>
+<li>
+<p><strong>Limited Number of Environments</strong>:</p>
+<ul>
+<li>The study only examines four specific environments, which may not provide sufficient diversity to generalize results across all types of reinforcement learning environments. More complex environments with larger state or action spaces or different dynamics could yield different outcomes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Lack of Random Seed Variation</strong>:</p>
+<ul>
+<li>The reported results are based on a single run or an average of a limited number of runs. Conducting multiple experiments with different random seeds could better demonstrate the robustness and reliability of the results.</li>
+</ul>
+</li>
+<li>
+<p><strong>Focus on Specific Metrics</strong>:</p>
+<ul>
+<li>The evaluation metrics (final reward average, convergence speed, and stability) cover only certain aspects of algorithm performance. Other metrics, such as computational efficiency, training time, or robustness to environmental noise, were not assessed.</li>
+</ul>
+</li>
+</ol>
+<h3 id="future-work">Future Work<a hidden class="anchor" aria-hidden="true" href="#future-work">#</a></h3>
+<p>To build upon the findings of this project, which evaluated the performance of reinforcement learning algorithms (DQN, A2C, NAF, and SAC) in discrete (FrozenLake-v1, MountainCar-v0) and continuous (Pendulum-v1, HalfCheetah-v4) environments, several directions for future research and development can be pursued to address the limitations and extend the scope of the study:</p>
+<ol>
+<li>
+<p><strong>Broader Range of Environments</strong>:</p>
+<ul>
+<li>Future work could include testing the algorithms on a wider variety of environments, such as those with larger state and action spaces, partially observable states (e.g., POMDPs), or real-world-inspired tasks. This would help validate the generalizability of the observed performance trends.</li>
+</ul>
+</li>
+<li>
+<p><strong>Incorporating Random Seed Variations</strong>:</p>
+<ul>
+<li>Conducting multiple runs with different random seeds would improve the robustness of results and allow for statistical analysis of performance variability, ensuring that conclusions are not biased by specific initial conditions.</li>
+</ul>
+</li>
+<li>
+<p><strong>Evaluation of Additional Metrics</strong>:</p>
+<ul>
+<li>Future studies could incorporate metrics such as computational efficiency, memory usage, training time, and robustness to environmental perturbations (e.g., noise or dynamic changes). This would provide a more holistic view of algorithm suitability for practical applications.</li>
+</ul>
+</li>
+</ol>
+<h3 id="real-world-application-robotics">Real-World Application: Robotics<a hidden class="anchor" aria-hidden="true" href="#real-world-application-robotics">#</a></h3>
+<p>The insights gained from this project have significant potential for real-world applications, particularly in robotics, where reinforcement learning can enable autonomous systems to perform complex tasks. The following outlines how the evaluated algorithms could be applied and extended in robotics contexts:</p>
+<ol>
+<li>
+<p><strong>Robotic Manipulation</strong>:</p>
+<ul>
+<li>Algorithms like SAC, which performed well in continuous control tasks (e.g., Pendulum-v1, HalfCheetah-v4), could be applied to robotic arms for tasks such as grasping, object manipulation, or assembly. SAC’s ability to handle continuous action spaces makes it suitable for precise control in high-dimensional settings.</li>
+</ul>
+<p><img loading="lazy" src="figs/grasp.png#center" alt="Robotic Manipulation"  />
+</p>
+</li>
+<li>
+<p><strong>Autonomous Navigation</strong>:</p>
+<ul>
+<li>Discrete action space algorithms like DQN and A2C, tested in environments like FrozenLake-v1, could be adapted for robot navigation in grid-like or structured environments (e.g., warehouse robots). A2C’s stability in stochastic settings could be particularly useful for navigating dynamic or uncertain environments.</li>
+</ul>
+<p><img loading="lazy" src="figs/picker-robots.png#center" alt="Autonomous Navigation"  />
+</p>
+</li>
+<li>
+<p><strong>Locomotion and Mobility</strong>:</p>
+<ul>
+<li>The success of SAC in HalfCheetah-v4 suggests its potential for controlling legged robots or humanoid robots for locomotion tasks. Future work could involve applying SAC to real-world robotic platforms to achieve robust and efficient walking or running behaviors.</li>
+</ul>
+<p><img loading="lazy" src="figs/spot.png#center" alt="legged robots"  />
+</p>
+</li>
+</ol>
+<p>These future research directions and real-world applications highlight the potential to extend the current study’s findings to more diverse and practical scenarios. By addressing the identified limitations and applying the algorithms to robotics, this work can contribute to the development of more robust, efficient, and adaptable autonomous systems.</p>
+<h2 id="references">References<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h2>
+<ul>
+<li>
+<p><strong>A2C (Advantage Actor-Critic)</strong>:</p>
+<ul>
+<li>Mnih, V., et al. (2016). &ldquo;Asynchronous Methods for Deep Reinforcement Learning.&rdquo; <em>ICML 2016</em>. <a href="https://arxiv.org/abs/1602.01783">Paper</a></li>
+<li>Stable-Baselines3 A2C Implementation: <a href="https://github.com/DLR-RM/stable-baselines3/blob/master/stable_baselines3/a2c/a2c.py">GitHub</a></li>
+</ul>
+</li>
+<li>
+<p><strong>SAC (Soft Actor-Critic)</strong>:</p>
+<ul>
+<li>Haarnoja, T., et al. (2018). &ldquo;Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor.&rdquo; <em>ICML 2018</em>. <a href="https://arxiv.org/abs/1801.01290">Paper</a></li>
+<li>Stable-Baselines3 SAC Implementation: <a href="https://github.com/DLR-RM/stable-baselines3/blob/master/stable_baselines3/sac/sac.py">GitHub</a></li>
+</ul>
+</li>
+<li>
+<p><strong>DQN (Deep Q-Network)</strong>:</p>
+<ul>
+<li>Mnih, V., et al. (2015). &ldquo;Human-level control through deep reinforcement learning.&rdquo; <em>Nature</em>, 518(7540), 529-533. <a href="https://www.nature.com/articles/nature14236">Paper</a></li>
+<li>Stable-Baselines3 DQN Implementation: <a href="https://github.com/DLR-RM/stable-baselines3/blob/master/stable_baselines3/dqn/dqn.py">GitHub</a></li>
+</ul>
+</li>
+<li>
+<p><strong>NAF (Normalized Advantage Function)</strong>:</p>
+<ul>
+<li>Gu, S., et al. (2016). &ldquo;Continuous Deep Q-Learning with Model-based Acceleration.&rdquo; <em>ICML 2016</em>. <a href="https://arxiv.org/abs/1603.00748">Paper</a></li>
+</ul>
+</li>
+<li>
+<p><strong>Gymnasium</strong>:</p>
+<ul>
+<li>Official Gymnasium Documentation: <a href="https://gymnasium.farama.org/">Gymnasium</a></li>
+</ul>
+</li>
+</ul>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/actor-critic/">Actor-Critic</a></li>
+      <li><a href="http://localhost:1313/tags/value-based/">Value-Based</a></li>
+      <li><a href="http://localhost:1313/tags/dqn/">DQN</a></li>
+      <li><a href="http://localhost:1313/tags/a2c/">A2C</a></li>
+      <li><a href="http://localhost:1313/tags/sac/">SAC</a></li>
+      <li><a href="http://localhost:1313/tags/naf/">NAF</a></li>
+      <li><a href="http://localhost:1313/tags/reinforcement-learning/">Reinforcement Learning</a></li>
+      <li><a href="http://localhost:1313/tags/continuous-action-space/">Continuous Action Space</a></li>
+      <li><a href="http://localhost:1313/tags/discrete-action-space/">Discrete Action Space</a></li>
+      <li><a href="http://localhost:1313/tags/gui/">GUI</a></li>
+    </ul>
+  </footer>
+</article>
+
+<div id="disqus_thread"></div>
+<script>
+    window.disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "rljclub-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2025 <a href="http://localhost:1313/">🧠 RL Journal Club</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
