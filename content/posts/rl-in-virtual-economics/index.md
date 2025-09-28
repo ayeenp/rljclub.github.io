@@ -1,7 +1,7 @@
 ---
 author: ["Mohammadjavad Ahmadpour", "Amirmahdi Meighani"]
 title: 'Rl in Virtual Economics'
-date: 2025-09-07T15:49:28+03:30
+date: "2025-09-07"
 cover:
   image: Animator_Robot_Trades_Crypto.gif
   caption: "RL for trade"
