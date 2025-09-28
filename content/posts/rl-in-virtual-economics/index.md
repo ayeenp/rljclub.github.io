@@ -2,6 +2,8 @@
 author: ["Mohammadjavad Ahmadpour", "Amirmahdi Meighani"]
 title: 'Rl in Virtual Economics'
 date: "2025-09-07"
+description: "Explore how Reinforcement Learning (RL) is transforming virtual economies, from decentralized finance (DeFi) governance to algorithmic trading. This post covers RL applications in DeFi protocols, lending mechanisms, and adaptive trading strategies, highlighting recent research and practical results."
+tags: ["reinforcement-learning", "defi", "algorithmic-trading", "finance", "machine-learning", "governance", "cryptocurrencies", "deep-learning"]
 cover:
   image: Animator_Robot_Trades_Crypto.gif
   caption: "RL for trade"
